@@ -1,17 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_window_legacy.c                               :+:      :+:    :+:   */
+/*   legacy.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 21:24:32 by map               #+#    #+#             */
-/*   Updated: 2016/12/15 05:49:47 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/19 17:13:43 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mglw_ogl2tools.h"
 #include "mglw_intern.h"
+
+#include "ressources/quads.h"
 
 int			MGLWopener_legacy(mglwin *win, int x, int y, const char *title)
 {
@@ -26,12 +28,13 @@ int			MGLWopener_legacy(mglwin *win, int x, int y, const char *title)
 		glfwDestroyWindow(win->data->window);
 		return (0);
 	}
-	if ((win->flags & MGLW_2DLAYER) &&
-		!(win->data->layer2D = mglw_mktexture(
-			(uint)x, (uint)y, MGLW_RGBA, MGLWI_DYNAMIC)))
+	mglw_initwin(win, x, y);
+	if (win->data->flags & MGLW_2DLAYER)
 	{
-		win->flags &= ~MGLW_2DLAYER;
-		win->data->flags &= ~MGLW_2DLAYER;
+		glGenBuffers(1, &(win->data->l2D_buffer));
+		glBindBuffer(GL_ARRAY_BUFFER, win->data->l2D_buffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(mglw_GR_quad),
+			&mglw_GR_quad, GL_STATIC_DRAW);
 	}
 	return (1);
 }
@@ -40,6 +43,19 @@ void		MGLWclearer_legacy(mglwin *win)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	(void)win;
+}
+
+void		MGLWimagedraw_legacy(mglwin *win, mglimg *img, int x, int y)
+{
+	if (!win || !img)
+		return ;
+	glPushAttrib(GL_COLOR_BUFFER_BIT|GL_CURRENT_BIT);
+	glEnable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	(void)x;
+	(void)y;
+	glPopAttrib(GL_COLOR_BUFFER_BIT|GL_CURRENT_BIT);
 }
 
 void		MGLWdrawer_legacy(mglwin *win)
@@ -62,6 +78,5 @@ void		MGLWdrawer_legacy(mglwin *win)
 
 void		MGLWcloser_legacy(mglwin *win)
 {
-	if (win->flags & MGLW_2DLAYER)
-		mglw_rmimg((mglimg *)(win->data->layer2D));
+	(void)win;
 }

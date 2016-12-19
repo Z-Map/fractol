@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/16 18:39:16 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/15 02:05:50 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/19 05:00:12 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int			MGLWdelallimg();
 
 mglwin		*mglw_mkwin(mglwm mode, mglwf flags);
 mglwin		*mglw_openwin(mglwin *win, int x, int y, const char *title);
+mglwin		*mglw_initwin(mglwin *win, int x, int y);
 int			mglwin_run(mglwin *win);
 mglwin		*mglwin_stop(mglwin *win);
 mglwin		*mglwin_shouldclose(mglwin *win);
@@ -57,7 +58,7 @@ void		mglw_rmwin(mglwin *win);
 
 /* MiniGLwin Window lifecycle */
 
-mglwin		*mglw_draw_itow(mglwin *win, mglimg *img);
+mglwin		*mglw_draw_itow(mglwin *win, mglimg *img, int x, int y);
 void		mglwin_draw(mglwin *win);
 int			mglwin_is_running(mglwin *win);
 
@@ -87,10 +88,10 @@ void		MGLWdrawer_opengl3(mglwin *win);
 void		MGLWdrawer_opengl4(mglwin *win);
 void		MGLWdrawer_vulkan(mglwin *win);
 
-void		MGLWimagedraw_legacy(mglwin *win, mglimg *img);
-void		MGLWimagedraw_opengl3(mglwin *win, mglimg *img);
-void		MGLWimagedraw_opengl4(mglwin *win, mglimg *img);
-void		MGLWimagedraw_vulkan(mglwin *win, mglimg *img);
+void		MGLWimagedraw_legacy(mglwin *win, mglimg *img, int x, int y);
+void		MGLWimagedraw_opengl3(mglwin *win, mglimg *img, int x, int y);
+void		MGLWimagedraw_opengl4(mglwin *win, mglimg *img, int x, int y);
+void		MGLWimagedraw_vulkan(mglwin *win, mglimg *img, int x, int y);
 
 void		MGLWcloser_legacy(mglwin *win);
 void		MGLWcloser_opengl3(mglwin *win);

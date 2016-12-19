@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 22:47:57 by map               #+#    #+#             */
-/*   Updated: 2016/12/15 04:50:26 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/19 04:42:25 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ struct			mglw_win_data
 	GLFWwindow	*window;
 	mglwf		flags;
 	mgltex		*layer2D;
+	GLuint		l2D_buffer;
 	GLuint		draw_vao;
 	GLuint		draw_buffers[8];
 	GLuint		draw_tex[4];

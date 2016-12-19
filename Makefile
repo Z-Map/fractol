@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2016/12/15 04:51:39 by qloubier         ###   ########.fr        #
+#    Updated: 2016/12/18 20:19:22 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,35 +37,35 @@ INCDIR=-Isrc/include -I$(LIBDIR)/glfw/include -I$(LIBDIR)/glload/include
 LIBDIR=lib
 BUILDDIR=build
 SRCDIR=src
-OBJ=system.o\
-	system_settings.o\
-	system_wlst.o\
-	system_ilst.o\
-	window.o\
-	window_event.o\
-	window_layer.o\
-	window_legacy.o\
-	window_opengl3.o\
-	window_opengl4.o\
-	window_vulkan.o\
-	image.o\
-	texture.o\
-	image_loader.o\
-	error.o
+SRCS=system.c\
+	system/settings.c\
+	system/wlst.c\
+	system/ilst.c\
+	window.c\
+	window/event.c\
+	window/layer.c\
+	window/legacy.c\
+	window/opengl3.c\
+	window/opengl4.c\
+	window/vulkan.c\
+	image.c\
+	texture.c\
+	image_loader.c\
+	error.c
+OBJ=$(subst /,~,$(SRCS:%.c=%.o))
 
-INTERN_OBJ=$(OBJ:%=$(BUILDDIR)/mglw_%)
-BOBJ_GUARD=off
-ifeq ($(BOBJ_GUARD),off)
-	ALLOBJ=$(OBJ:%.o=$(SRCDIR)/%.c)
-else
-	ALLOBJ=$(INTERN_OBJ)
-endif
-OSXLIBS=-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
-TESTSRC=test/movesquare.c
+INTERN_SRCS	= $(SRCS:%=$(SRCDIR)/%)
+INTERN_OBJ	= $(OBJ:%=$(BUILDDIR)/mglw_%)
+INTERN_DEP	= $(INTERN_OBJ:%.o=%.d)
+BOBJ_GUARD	= off
+ALLOBJ		= $(INTERN_OBJ)
+OSXLIBS		= -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
+TESTSRC		= test/movesquare.c
 
-.PHONY: all clean fclean re $(TESTSRC) include/mglw_keys.h
+.PHONY: all clean fclean re $(TESTSRC) include/mglw_keys.h $(INTERN_DEP)
 
 all: $(NAME)
+	@#echo "$(INTERN_OBJ)"
 
 include/mglw_keys.h: glfw/include/GLFW/glfw3.h
 	printf "#ifndef MGLW_KEYS_H\n# define MGLW_KEYS_H\n\n" > include/mglw_keys.h
@@ -84,10 +84,8 @@ $(BUILDDIR)/src/libglfw3.a: $(BUILDDIR)/Makefile
 $(BUILDDIR)/libglload.a:
 	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glload BUILDDIR=$(CURDIR)/$(BUILDDIR) config=$(config)
 
-$(OBJ:%.o=$(SRCDIR)/%.c):
-
 $(NAME): $(BUILDDIR) $(BUILDDIR)/src/libglfw3.a \
-	$(BUILDDIR)/libglload.a $(ALLOBJ)
+	$(BUILDDIR)/libglload.a $(INTERN_OBJ)
 ifeq ($(BOBJ_GUARD),off)
 	$(SILENT)$(MAKE) -s $(NAME) BOBJ_GUARD=on
 else
@@ -96,12 +94,14 @@ else
 	$(SILENT)sed "s/-lglfw3/-l$(LINKNAME)/" $(BUILDDIR)/src/glfw3.pc > ./$(LINKNAME).pc
 endif
 
--include $(INTERN_OBJ:%.o=%.d)
+$(INTERN_OBJ):
+ifeq ($(BOBJ_GUARD),on)
+	@printf "\e[33mCompile $@\e[31m\e[32D"
+	$(SILENT)$(CC) $(CFLAGS) $(INCDIR) -o $@ -c $(subst ~,/,$(@:$(BUILDDIR)/mglw_%.o=$(SRCDIR)/%.c))
+	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m compiled !\e(B\e[m\n"
+endif
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.c
-	@printf "\e[33mCompile $@\e[31m"
-	$(SILENT)$(CC) -o $@ -c $< $(CFLAGS) $(INCDIR)
-	@printf "\e[32D\e[m[\e[32mok\e[m] \e[35m$@\e[m compiled !\e(B\e[m\n"
+-include $(INTERN_OBJ:%.o=%.d)
 
 libclean:
 	@printf "\e[31mCleaning lib files ...\e(B\e[m\n"
@@ -110,7 +110,7 @@ libclean:
 
 clean:
 	@printf "\e[31mCleaning compile files ...\e(B\e[m\n"
-	$(SILENT)rm -f $(INTERN_OBJ)
+	$(SILENT)rm -f $(INTERN_OBJ) $(INTERN_DEP)
 
 fclean: clean
 	@printf "\e[31mCleaning $(NAME) ...\e(B\e[m\n"
