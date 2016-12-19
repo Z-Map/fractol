@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/14 14:33:40 by qloubier          #+#    #+#              #
-#    Updated: 2016/12/14 16:59:39 by qloubier         ###   ########.fr        #
+#    Updated: 2016/12/19 19:20:24 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,8 @@ ifeq ($(OPSYS),Linux)
   DEFINES	+= -DLOAD_X11
   OBJS		+= $(BUILDDIR)/glx_load.o
   CXXOBJS	+= $(BUILDDIR)/glx_load_cpp.o
+else
+  CFLAGS	+= -Wno-pointer-sign -Wno-deprecated-declarations
 endif
 
 # Environnement Vars
