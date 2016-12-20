@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_shaders.h                                    :+:      :+:    :+:   */
+/*   basic.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/15 15:32:54 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/15 15:39:42 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/20 20:39:19 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BASIC_SHADERS_H
 #define BASIC_SHADERS_H
 
-struct				mglw_shader
-{
-	const char		*vsh;
-	const char		*fsh;
-};
+#include "mgl/shaders.h"
 
-struct mglw_shader	drawimage2d_shader = (struct mglw_shader){
+mglsha		drawimage2d_shader = (mglsha){
+	.id = 0,
+	.vshid = 0,
+	.fshid = 0,
 	.vsh = "",
 	.fsh = ""
 };
