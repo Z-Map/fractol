@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   image.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/17 01:54:35 by map               #+#    #+#             */
-/*   Updated: 2016/12/21 15:31:15 by qloubier         ###   ########.fr       */
+/*   Created: 2016/12/21 15:03:37 by qloubier          #+#    #+#             */
+/*   Updated: 2016/12/21 15:29:49 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef MGLW_IMAGE_H
+
+#include "mglw_intern/mglw_header.h"
 #include "mglw_intern/system.h"
 
-void				mglw_seterror(int error, const char* msg)
-{
-	static mglw_sys	*sys = NULL;
+#include "mglw/image.h"
 
-	if (!error)
-	{
-		sys = (mglw_sys *)(size_t)msg;
-		return ;
-	}
-	if (sys)
-		sys->error = error;
-	printf("miniGLwin Error n°%i : %s\n", error, msg);
-}
+/* MiniGLwin image management  */
+
+int			MGLWgetBpp(mglw_tf fmt, mglw_if flags);
+mglw_tf		MGLWgetFormat(int bpp, mglw_if flags);
+mglw_tt		MGLWgetType(mglw_tf fmt, mglw_if flags);
+
+#endif

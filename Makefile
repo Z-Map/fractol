@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2016/12/18 20:19:22 by qloubier         ###   ########.fr        #
+#    Updated: 2016/12/21 15:48:49 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME		= libmglw.a
 LINKNAME	= mglw
 PROJECTNAME	= mglw
 SILENT		= @
-CFLAGS		= -Wall -Werror -Wextra -MMD -MP
+CFLAGS		= -Wall -Werror -Wextra
 
 ifndef CC
   CC=clang
@@ -33,7 +33,7 @@ ifeq ($(config),release)
   LIBSUFIX=
 endif
 
-INCDIR=-Isrc/include -I$(LIBDIR)/glfw/include -I$(LIBDIR)/glload/include
+INCDIR=-Iinclude -Isrc/include -I$(LIBDIR)/glfw/include -I$(LIBDIR)/glload/include
 LIBDIR=lib
 BUILDDIR=build
 SRCDIR=src
@@ -97,7 +97,7 @@ endif
 $(INTERN_OBJ):
 ifeq ($(BOBJ_GUARD),on)
 	@printf "\e[33mCompile $@\e[31m\e[32D"
-	$(SILENT)$(CC) $(CFLAGS) $(INCDIR) -o $@ -c $(subst ~,/,$(@:$(BUILDDIR)/mglw_%.o=$(SRCDIR)/%.c))
+	$(SILENT)$(CC) -MMD -MP $(CFLAGS) $(INCDIR) -o $@ -c $(subst ~,/,$(@:$(BUILDDIR)/mglw_%.o=$(SRCDIR)/%.c))
 	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m compiled !\e(B\e[m\n"
 endif
 

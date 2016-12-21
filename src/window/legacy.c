@@ -6,14 +6,14 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 21:24:32 by map               #+#    #+#             */
-/*   Updated: 2016/12/19 17:13:43 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:35:05 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_ogl2tools.h"
-#include "mglw_intern.h"
+#include "mglw_intern/mglw_ogl2tools.h"
+#include "mglw_intern/window.h"
 
-#include "ressources/quads.h"
+#include "mgl/ressources/quads.h"
 
 int			MGLWopener_legacy(mglwin *win, int x, int y, const char *title)
 {

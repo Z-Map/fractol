@@ -1,17 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_window_opengl4.c                              :+:      :+:    :+:   */
+/*   opengl4.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 01:31:48 by map               #+#    #+#             */
-/*   Updated: 2016/12/15 15:45:28 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:34:30 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_ogl4tools.h"
-#include "mglw_intern.h"
+#include "mglw_intern/mglw_ogl4tools.h"
+#include "mglw_intern/window.h"
+
+#include "mgl/ressources/quads.h"
 
 int			MGLWopener_opengl4(mglwin *win, int x, int y, const char *title)
 {

@@ -1,27 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   mglw_vulkantools.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/17 01:54:35 by map               #+#    #+#             */
-/*   Updated: 2016/12/21 15:31:15 by qloubier         ###   ########.fr       */
+/*   Created: 2016/11/18 22:47:09 by map               #+#    #+#             */
+/*   Updated: 2016/12/21 15:21:53 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_intern/system.h"
+#ifndef MGLW_OGL2TOOLS
+# define MGLW_OGL2TOOLS
 
-void				mglw_seterror(int error, const char* msg)
-{
-	static mglw_sys	*sys = NULL;
+#include <stdlib.h>
+#include "GLFW/glfw3.h"
+# include "mglw_intern/mglw_header.h"
 
-	if (!error)
-	{
-		sys = (mglw_sys *)(size_t)msg;
-		return ;
-	}
-	if (sys)
-		sys->error = error;
-	printf("miniGLwin Error n°%i : %s\n", error, msg);
-}
+
+
+#endif

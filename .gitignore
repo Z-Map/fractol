@@ -31,3 +31,9 @@
 # Debug files
 *.dSYM/
 *.su
+
+# build directory
+build/*
+build/**/*
+mglw.pc
+test_mglw

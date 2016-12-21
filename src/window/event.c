@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_window_event.c                                :+:      :+:    :+:   */
+/*   event.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 21:59:43 by map               #+#    #+#             */
-/*   Updated: 2016/12/15 00:40:31 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:31:28 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_intern.h"
+#include "mglw_intern/window.h"
 
 mglwin		*mglw_setkcb(mglwin *win, int s, int (*f)(void *, int), void *arg)
 {
@@ -32,9 +32,9 @@ mglwin		*mglw_setkcb(mglwin *win, int s, int (*f)(void *, int), void *arg)
 	return (win);
 }
 
-void		mglwin_keyprocess(GLFWwindow *win, int k, int sc, int s, int m)
+void		MGLWkeyprocess(GLFWwindow *win, int k, int sc, int s, int m)
 {
-	mglwindata *const	wdata = (mglwindata *)glfwGetWindowUserPointer(win);
+	mglw_wd *const	wdata = (mglw_wd *)glfwGetWindowUserPointer(win);
 	int					(*kcb)(void *, int) = wdata->kcb[s];
 	int					ret;
 

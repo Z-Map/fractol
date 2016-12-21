@@ -6,15 +6,16 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/16 18:39:16 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/15 05:48:19 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 14:17:07 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MGLW_H
 #define MGLW_H
 
-#include <stdlib.h>
+#include <string.h>
 #include "mglw_gldef.h"
+#include "mglw_keys.h"
 
 typedef unsigned char	uchar;
 typedef unsigned int	uint;
@@ -31,7 +32,7 @@ typedef enum	mglw_settings
 	MGLWS_DEFAULT_TFLAG,
 	MGLWS_DEFAULT_TEXFORMAT,
 	MGLWS_LENGHT
-}				mglws;
+}				mlgw_s;
 
 typedef enum	mglw_texture_format
 {
@@ -64,7 +65,7 @@ typedef enum	mglwin_mode
 	MGLW_OPENGL3_MODE = 2,
 	MGLW_OPENGL4_MODE = 3,
 	MGLW_VULKAN_MODE = 4
-}				mglwm;
+}				mglw_m;
 
 typedef enum	mglwin_flag
 {
@@ -74,7 +75,7 @@ typedef enum	mglwin_flag
 	MGLW_DRAWTOOLS = 1 << 2,
 	MGLW_STOP = 1 << 3,
 	MGLW_WINDATAFLAGS = MGLW_2DLAYER | MGLW_DRAWTOOLS
-}				mglwf;
+}				mglw_f;
 
 typedef enum	mglw_imgflag
 {
@@ -95,9 +96,9 @@ typedef enum	mglw_imgflag
 
 typedef struct			mlgw_image
 {
-	const uint			x;
-	const uint			y;
-	const uint			bpp;
+	const unsigned int			x;
+	const unsigned int			y;
+	const unsigned int			bpp;
 	const mglw_if		flags;
 	const mglw_tf		format;
 	const mglw_tt		type;
@@ -109,24 +110,24 @@ typedef struct			mlgw_image
 
 
 typedef void			mglwin; /*
-typedef struct mglw_win_data		mglwindata;
+typedef struct mglw_win_data		mglw_wd;
 typedef struct mglw_win				mglwin;
 
 struct			mglw_win_data
 {
-	uint		user;
+	unsigned int		user;
 	int			state;
 	void		*window;
-	mglwf		flags;
+	mglw_f		flags;
 	mglimg		*layer2D;
 };
 
 struct			mglw_win
 {
-	mglwindata	*data;
+	mglw_wd	*data;
 	mglwin		*next;
-	mglwm		mode;
-	mglwf		flags;
+	mglw_m		mode;
+	mglw_f		flags;
 	double		creatime;
 };
 //*/
@@ -135,10 +136,10 @@ typedef void			mglw_sys;
 
 int						mglw_init();
 int						mglw_close();
-int						mglw_getsetting(mglws setting);
-void					mglw_setsetting(mglws setting, int value);
+int						mglw_getsetting(mlgw_s setting);
+void					mglw_setsetting(mlgw_s setting, int value);
 
-mglwin					*mglw_mkwin(mglwm mode, mglwf flags);
+mglwin					*mglw_mkwin(mglw_m mode, mglw_f flags);
 mglwin					*mglw_openwin(mglwin *win, int x, int y, const char *t);
 int						mglwin_run(mglwin *win);
 void					mglwin_draw(mglwin *win);
@@ -149,7 +150,7 @@ mglwin					*mglw_setkcb(mglwin *win, int s,
 mglwin					*mglw_closewin(mglwin *win);
 void					mglw_rmwin(mglwin *win);
 
-mglimg					*mglw_mkimg(uint x, uint y, uint bpp, mglw_if flags);
+mglimg					*mglw_mkimg(unsigned int x, unsigned int y, unsigned int bpp, mglw_if flags);
 mglimg					*mglw_loadimg(const char *fname, mglw_if flags, int n);
 mglimg					*mglw_reloadimg(mglimg *img, const char *filename);
 void					mglw_rmimg(mglimg *img);

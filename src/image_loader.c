@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_image_loader.c                                :+:      :+:    :+:   */
+/*   image_loader.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 01:55:52 by map               #+#    #+#             */
-/*   Updated: 2016/12/15 04:46:44 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:31:03 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_intern.h"
+#include "mglw_intern/image.h"
 #pragma GCC diagnostic push
 #if __GNUC__ >= 6
 #pragma GCC diagnostic ignored "-Wmisleading-indentation"

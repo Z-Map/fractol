@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_system.c                                      :+:      :+:    :+:   */
+/*   system.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/17 00:28:32 by map               #+#    #+#             */
-/*   Updated: 2016/12/15 01:24:40 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:27:36 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_intern.h"
+#include "mglw_intern/system.h"
 
 static mglw_sys		mglw_Singletone_System = (mglw_sys){
 	.error = 0, .wlst = NULL, .ilst = NULL,

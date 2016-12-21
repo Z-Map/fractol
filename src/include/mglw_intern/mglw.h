@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   mglw.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/17 01:54:35 by map               #+#    #+#             */
-/*   Updated: 2016/12/21 15:31:15 by qloubier         ###   ########.fr       */
+/*   Created: 2016/11/16 18:39:16 by qloubier          #+#    #+#             */
+/*   Updated: 2016/12/21 15:20:45 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef MGLW_INTERN_H
+#define MGLW_INTERN_H
+
+#include "mglw_intern/mglw_header.h"
+
 #include "mglw_intern/system.h"
+#include "mglw_intern/window.h"
+#include "mglw_intern/image.h"
+// #include "mglw_intern/texture.h"
 
-void				mglw_seterror(int error, const char* msg)
-{
-	static mglw_sys	*sys = NULL;
-
-	if (!error)
-	{
-		sys = (mglw_sys *)(size_t)msg;
-		return ;
-	}
-	if (sys)
-		sys->error = error;
-	printf("miniGLwin Error n°%i : %s\n", error, msg);
-}
+#endif

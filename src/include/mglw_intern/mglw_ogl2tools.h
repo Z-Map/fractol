@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 22:47:09 by map               #+#    #+#             */
-/*   Updated: 2016/12/04 17:46:43 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:21:31 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "glload/gl_2_1.h"
 # include "glload/gl_load.h"
 # include "GLFW/glfw3.h"
-# include "data/mglw_types.h"
+# include "mglw_intern/mglw_header.h"
 
 
 

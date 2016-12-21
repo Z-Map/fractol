@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_system_wlst.c                                 :+:      :+:    :+:   */
+/*   wlst.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/17 18:50:34 by qloubier          #+#    #+#             */
-/*   Updated: 2016/11/18 17:07:46 by map              ###   ########.fr       */
+/*   Updated: 2016/12/21 15:26:19 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_intern.h"
+#include "mglw_intern/system.h"
+#include "mglw_intern/window.h"
 
 int					MGLWaddwin(mglwin *win)
 {

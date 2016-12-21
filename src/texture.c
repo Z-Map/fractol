@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_texture.c                                     :+:      :+:    :+:   */
+/*   texture.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/02 19:20:49 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/15 05:49:34 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:43:33 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_intern.h"
+#include "mglw_intern/image.h"
 
 mglw_tt			MGLWgetType(mglw_tf fmt, mglw_if flags)
 {
@@ -62,20 +62,20 @@ mglw_tf			MGLWgetFormat(int bpp, mglw_if flags)
 	return (MGLW_TF_UNDEFINED);
 }
 
-mgltex			*mglw_mktexture(uint x, uint y, mglw_tf fmt,  mglw_if flags)
+mgltex			*mglw_mktexture(int x, int y, mglw_tf fmt,  mglw_if flags)
 {
 	mglw_sys *const	sys = MGLWgetsys();
 	mglimg			img;
 	mgltex			*ret;
-	uint			bpp;
+	int			bpp;
 
 	flags &= MGLWI_USERFLAG;
 	flags |= MGLWI_TEXTURE;
 	if (fmt == MGLW_TF_UNDEFINED)
 		fmt = sys->settings[MGLWS_DEFAULT_TEXFORMAT];
 	bpp = MGLWgetBpp(fmt, flags);
-	img = (mglimg){ .x = x, .y = y, .bpp = (uint)bpp, .flags = flags,
-		.format = fmt, .type = MGLWgetType(fmt, flags),
+	img = (mglimg){ .x = (uint)x, .y = (uint)y, .bpp = (uint)bpp,
+		.flags = flags, .format = fmt, .type = MGLWgetType(fmt, flags),
 		.memlen = x * y * bpp, .pixels = NULL, .creatime = glfwGetTime(),
 		.next = NULL};
 	ret = (mgltex *)&img;
@@ -91,11 +91,11 @@ mgltex			*mglw_mktexture(uint x, uint y, mglw_tf fmt,  mglw_if flags)
 	return (ret);
 }
 
-mgltex			*mglw_mktex(uint x, uint y)
+mgltex			*mglw_mktex(int x, int y)
 {
 	mglw_sys *const	sys = MGLWgetsys();
 
 	return (mglw_mktexture(x, y,
-		sys->settings[MGLWS_DEFAULT_TEXFORMAT],
+		(mglw_tf)sys->settings[MGLWS_DEFAULT_TEXFORMAT],
 		sys->settings[MGLWS_DEFAULT_TFLAG]));
 }

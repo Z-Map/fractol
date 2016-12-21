@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_vulkantools.h                                 :+:      :+:    :+:   */
+/*   mglw.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/18 22:47:09 by map               #+#    #+#             */
-/*   Updated: 2016/12/04 17:46:31 by qloubier         ###   ########.fr       */
+/*   Created: 2016/12/21 04:21:10 by qloubier          #+#    #+#             */
+/*   Updated: 2016/12/21 15:10:09 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MGLW_OGL2TOOLS
-# define MGLW_OGL2TOOLS
+#ifndef MGLW_H
+#define MGLW_H
 
-#include <stdlib.h>
-#include "GLFW/glfw3.h"
-#include "data/mglw_types.h"
+#include "mglw/mglw_header.h"
 
-
+#include "mglw/system.h"
+#include "mglw/window.h"
+#include "mglw/image.h"
+// #include "mglw/texture.h"
 
 #endif

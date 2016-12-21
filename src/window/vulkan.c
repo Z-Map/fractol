@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_window_vulkan.c                               :+:      :+:    :+:   */
+/*   vulkan.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 01:31:48 by map               #+#    #+#             */
-/*   Updated: 2016/12/15 15:30:58 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:34:27 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_ogl3tools.h"
-#include "mglw_intern.h"
+#include "mglw_intern/mglw_ogl3tools.h"
+#include "mglw_intern/window.h"
 
 int			MGLWopener_vulkan(mglwin *win, int x, int y, const char *title)
 {

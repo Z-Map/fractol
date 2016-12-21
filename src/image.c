@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mglw_image.c                                       :+:      :+:    :+:   */
+/*   image.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 01:55:52 by map               #+#    #+#             */
-/*   Updated: 2016/12/15 05:50:18 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:41:43 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_intern.h"
+#include "mglw_intern/image.h"
 
-mglimg		*mglw_mkimage(uint x, uint y, mglw_tf fmt,  mglw_if flags)
+mglimg		*mglw_mkimage(int x, int y, mglw_tf fmt,  mglw_if flags)
 {
 	mglw_sys *const	sys = MGLWgetsys();
 	int				bpp;
@@ -23,7 +23,8 @@ mglimg		*mglw_mkimage(uint x, uint y, mglw_tf fmt,  mglw_if flags)
 	bpp = MGLWgetBpp(fmt, flags);
 	if (bpp <= 1)
 		bpp = sys->settings[MGLWS_DEFAULT_IBPP];
-	img = (mglimg){ .x = x, .y = y, .bpp = (uint)bpp, .flags = flags,
+	img = (mglimg){ .x = (uint)x, .y = (uint)y,
+		.bpp = (uint)bpp, .flags = flags,
 		.format = fmt, .type = MGLWgetType(fmt, flags),
 		.memlen = x * y * bpp, .pixels = NULL, .creatime = glfwGetTime(),
 		.next = NULL};
@@ -38,13 +39,13 @@ mglimg		*mglw_mkimage(uint x, uint y, mglw_tf fmt,  mglw_if flags)
 	return (ret);
 }
 
-mglimg		*mglw_mkimg(uint x, uint y)
+mglimg		*mglw_mkimg(int x, int y)
 {
 	mglw_sys *const	sys = MGLWgetsys();
 
 	return (mglw_mkimage(x, y,
 		sys->settings[MGLWS_DEFAULT_IFORMAT],
-		(uint)sys->settings[MGLWS_DEFAULT_IFLAG]));
+		(mglw_if)(sys->settings[MGLWS_DEFAULT_IFLAG])));
 }
 
 mglimg		*mglw_dupimg(mglimg *img)
@@ -52,9 +53,10 @@ mglimg		*mglw_dupimg(mglimg *img)
 	mglimg			*ret;
 
 	if (img->flags & MGLWI_TEXTURE)
-		ret = (mglimg *)mglw_mktexture(img->x, img->y, img->format, img->flags);
+		ret = (mglimg *)mglw_mktexture(
+			(int)img->x, (int)img->y, img->format, img->flags);
 	else
-		ret = mglw_mkimage(img->x, img->y, img->format, img->flags);
+		ret = mglw_mkimage((int)img->x, (int)img->y, img->format, img->flags);
 	if (ret)
 		memcpy(img->pixels, ret->pixels, img->memlen);
 	return (ret);
@@ -98,7 +100,8 @@ mglimg		*mglw_resetimg(mglimg *img)
 
 	if (!(img->flags & MGLWI_DYNAMIC))
 	{
-		if (!(ret = mglw_mkimage(img->x, img->y, img->format, img->flags)))
+		if (!(ret = mglw_mkimage(
+			(uint)img->x, (uint)img->y, img->format, img->flags)))
 			return (NULL);
 		MGLWdelimg(img);
 		return (ret);

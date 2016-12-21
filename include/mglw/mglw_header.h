@@ -1,21 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   layer.c                                            :+:      :+:    :+:   */
+/*   mglw_header.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/18 21:59:43 by map               #+#    #+#             */
-/*   Updated: 2016/12/21 15:31:48 by qloubier         ###   ########.fr       */
+/*   Created: 2016/12/21 14:36:23 by qloubier          #+#    #+#             */
+/*   Updated: 2016/12/21 14:40:34 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_intern/window.h"
-#include "mglw_intern/image.h"
+#ifndef MGLW_HEADER_H
+#define MGLW_HEADER_H
 
-mgltex		*mglw_get2dlayer(mglwin *win)
-{
-	if ((win) && (win->data->state & 1) && (win->flags & MGLW_2DLAYER))
-		return (win->data->layer2D);
-	return (NULL);
-}
+#include <string.h>
+
+#include "mglw/mglw_proto.h"
+
+#include "mglw/data/system.h"
+#include "mglw/data/image.h"
+#include "mglw/data/texture.h"
+#include "mglw/data/window.h"
+
+#endif

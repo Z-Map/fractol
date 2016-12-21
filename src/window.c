@@ -6,11 +6,12 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:38 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/19 17:11:36 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/21 15:30:15 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mglw_intern.h"
+#include "mglw_intern/window.h"
+#include "mglw_intern/image.h"
 
 /* Coucou, je suis une bonne grosse globale des familles comme on les aime*/
 static const struct wintypecb
@@ -52,15 +53,15 @@ static const struct wintypecb
 	}
 };
 
-mglwin		*mglw_mkwin(mglwm mode, mglwf flags)
+mglwin		*mglw_mkwin(mglw_m mode, mglw_f flags)
 {
 	mglwin			win;
-	mglwindata		wdata;
+	mglw_wd		wdata;
 	mglwin			*ret;
 
 	if (!mode)
 		return (NULL);
-	wdata = (mglwindata){ .user = 1, .state = 0, .window = NULL,
+	wdata = (mglw_wd){ .user = 1, .state = 0, .window = NULL,
 		.flags = flags & MGLW_WINDATAFLAGS,
 		.layer2D = NULL, .draw_vao = 0,
 		.draw_buffers = {0, 0, 0, 0, 0, 0, 0, 0}, .draw_tex = {0, 0, 0, 0},
@@ -70,7 +71,7 @@ mglwin		*mglw_mkwin(mglwm mode, mglwf flags)
 		.mode = mode, .flags = flags, .creatime = glfwGetTime()};
 	if (!(ret = malloc(sizeof(mglwin))))
 		return (NULL);
-	if (!(win.data = malloc(sizeof(mglwindata))))
+	if (!(win.data = malloc(sizeof(mglw_wd))))
 	{
 		free(ret);
 		return (NULL);
@@ -100,7 +101,7 @@ mglwin		*mglw_initwin(mglwin *win, int x, int y)
 	win->data->optime = glfwGetTime();
 	win->data->state |= 1;
 	glfwSetWindowUserPointer(win->data->window, win->data);
-	glfwSetKeyCallback(win->data->window, &mglwin_keyprocess);
+	glfwSetKeyCallback(win->data->window, &MGLWkeyprocess);
 	return (win);
 }
 

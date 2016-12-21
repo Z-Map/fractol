@@ -1,3 +1,4 @@
+-Iinclude
 -Isrc/include
 -Ilib/glfw/include
 -Ilib/glload/include
