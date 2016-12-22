@@ -6,14 +6,14 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:55 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/15 06:00:48 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/22 18:34:20 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include "mglw.h"
+#include "mglw/mglw.h"
 #include "mglw_keys.h"
 
 #define CUBECOL 0xff0000ff
@@ -87,9 +87,9 @@ void	draw(tctx *ctx, mglimg *img)
 {
 	static tctx		last = { 0, 0, 0, 0, 0};
 	int				x, y, i, j;
-	uint			*pxs;
+	unsigned int	*pxs;
 
-	pxs = (uint *)(img->pixels);
+	pxs = (unsigned int *)(img->pixels);
 	if (last.size)
 	{
 		j = last.y + last.size;
@@ -123,6 +123,7 @@ int		main()
 	const struct timespec	t = (struct timespec){0, 12000000L};
 	mglwin					*win;
 	mglimg					*img;
+	mglimg					*pinguin;
 	tctx					ctx;
 
 	if (!(mglw_init()) ||
@@ -131,7 +132,9 @@ int		main()
 			800, 600, "Coucou !")))
 		return (-1);
 	mglw_setsetting(MGLWS_EXITKEY, MGLW_KEY_ESCAPE);
-	img = mglw_get2dlayer(win);
+	img = (mglimg *)mglw_get2dlayer(win);
+	// pinguin = mglw_loadimage("ping.jpg", MGLWI_NONE, 4);
+	// memcpy(img->pixels, pinguin->pixels, img->memlen);
 	init_ctx(&ctx, img, 20);
 	mglw_setkcb(win, 1, &keypress, &ctx);
 	mglw_setkcb(win, 0, &keyrelease, &ctx);

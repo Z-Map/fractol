@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 04:05:26 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/21 15:06:50 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/22 17:37:09 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 /* MiniGLwin System management */
 
 int			mglw_init();
-int			mglw_close(mglw_sys *sys);
+int			mglw_close();
 
 /* MiniGLwin System management */
 

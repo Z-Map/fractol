@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/17 00:28:32 by map               #+#    #+#             */
-/*   Updated: 2016/12/21 15:27:36 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/22 17:38:38 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@ int			mglw_init()
 	return (1);
 }
 
-int			mglw_close(mglw_sys *sys)
+int			mglw_close()
 {
 	int		i;
 
-	i = MGLWdelallwin(sys);
+	i = MGLWdelallwin();
 	i += MGLWdelallimg();
 	glfwTerminate();
 	return (i);

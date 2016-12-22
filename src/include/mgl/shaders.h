@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/20 18:02:39 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/20 20:43:06 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/22 02:35:59 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,6 @@
 #include "glload/gl_all.h"
 #include "mgl/data/shader.h"
 
-
+mglsha		*mgl_compile_shader(mglsha *shdr);
 
 #endif
