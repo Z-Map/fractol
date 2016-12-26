@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2016/12/26 04:15:58 by qloubier         ###   ########.fr        #
+#    Updated: 2016/12/26 04:38:09 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,9 +81,9 @@ include/mglw_keys.h: glfw/include/GLFW/glfw3.h Makefile
 
 $(INTERN_SHA): %.h: % Makefile
 	@printf "\e[33mShader $<\e[31m\e[80D"
-	$(SILENT)printf "(const char[]){ " > $@
-	$(SILENT)xxd -i $< | grep -x "[0-9a-fx, ]*" >> $@
-	$(SILENT)printf " }" >> $@
+	$(SILENT)printf "(const char[]){" > $@
+	$(SILENT)xxd -i $< | grep -x "[0-9a-fx, ]*" | head -c -1 | tail -c +3 >> $@
+	$(SILENT)printf " , 0x00}" >> $@
 	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m\e(B\e[m\n"
 
 $(BUILDDIR):
