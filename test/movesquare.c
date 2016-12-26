@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:55 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/22 18:34:20 by qloubier         ###   ########.fr       */
+/*   Updated: 2016/12/22 19:57:07 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ int		main()
 	const struct timespec	t = (struct timespec){0, 12000000L};
 	mglwin					*win;
 	mglimg					*img;
-	mglimg					*pinguin;
+	// mglimg					*pinguin;
 	tctx					ctx;
 
 	if (!(mglw_init()) ||

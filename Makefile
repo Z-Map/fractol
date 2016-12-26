@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2016/12/22 03:15:36 by qloubier         ###   ########.fr        #
+#    Updated: 2016/12/26 04:15:58 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,11 +53,14 @@ SRCS=system.c\
 	image_loader.c\
 	error.c\
 	mgl/shaders.c
+SHADERS= pixelbox.vert pixelbox.frag\
+
 OBJ=$(subst /,~,$(SRCS:%.c=%.o))
 
 INTERN_SRCS	= $(SRCS:%=$(SRCDIR)/%)
 INTERN_OBJ	= $(OBJ:%=$(BUILDDIR)/mglw_%)
 INTERN_DEP	= $(INTERN_OBJ:%.o=%.d)
+INTERN_SHA	= $(SHADERS:%=$(SRCDIR)/include/mgl/ressources/shaders/%.h)
 BOBJ_GUARD	= $(shell if [ -d $(BUILDDIR) ]; then printf "on"; else printf "off"; fi)
 ALLOBJ		= $(INTERN_OBJ)
 OSXLIBS		= -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
@@ -71,10 +74,17 @@ endif
 
 all: $(NAME)
 
-include/mglw_keys.h: glfw/include/GLFW/glfw3.h
+include/mglw_keys.h: glfw/include/GLFW/glfw3.h Makefile
 	printf "#ifndef MGLW_KEYS_H\n# define MGLW_KEYS_H\n\n" > include/mglw_keys.h
 	cat glfw/include/GLFW/glfw3.h | grep "#define GLFW_KEY" | sed "s/GLFW/MGLW/" >> include/mglw_keys.h
 	printf "\n#endif\n" >> include/mglw_keys.h
+
+$(INTERN_SHA): %.h: % Makefile
+	@printf "\e[33mShader $<\e[31m\e[80D"
+	$(SILENT)printf "(const char[]){ " > $@
+	$(SILENT)xxd -i $< | grep -x "[0-9a-fx, ]*" >> $@
+	$(SILENT)printf " }" >> $@
+	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m\e(B\e[m\n"
 
 $(BUILDDIR):
 	$(SILENT)mkdir -p $(BUILDDIR)
@@ -88,16 +98,17 @@ $(BUILDDIR)/src/libglfw3.a: $(BUILDDIR)/Makefile
 $(GLLOAD_OBJ):
 	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glload $(CURDIR)/$@ BUILDDIR=$(CURDIR)/$(BUILDDIR) config=$(config)
 
-$(NAME): $(BUILDDIR) $(BUILDDIR)/src/libglfw3.a $(INTERN_OBJ) $(GLLOAD_OBJ)
+$(NAME): $(BUILDDIR) $(INTERN_SHA) $(BUILDDIR)/src/libglfw3.a $(INTERN_OBJ) $(GLLOAD_OBJ) Makefile
 ifeq ($(BOBJ_GUARD),off)
 	$(SILENT)$(MAKE) -s $(NAME) BOBJ_GUARD=on
 else
 	$(SILENT)cp $(BUILDDIR)/src/libglfw3.a ./$(NAME)
 	$(SILENT)ar -rcs $(NAME) $(ALLOBJ) $(GLLOAD_OBJ)
 	$(SILENT)sed "s/-lglfw3/-l$(LINKNAME)/" $(BUILDDIR)/src/glfw3.pc > ./$(LINKNAME).pc
+	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m compiled !\e(B\e[m\n"
 endif
 
-$(INTERN_OBJ):
+$(INTERN_OBJ): Makefile
 ifeq ($(BOBJ_GUARD),on)
 	@printf "\e[33mCompile $@\e[31m\e[80D"
 	$(SILENT)$(CC) -MMD -MP $(CFLAGS) $(INCDIR) -o $@ -c $(subst ~,/,$(@:$(BUILDDIR)/mglw_%.o=$(SRCDIR)/%.c))
