@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2017/01/05 07:23:38 by qloubier         ###   ########.fr        #
+#    Updated: 2017/01/08 17:55:56 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,7 +74,9 @@ BOBJ_GUARD	= $(shell if [ -d $(BUILDDIR) ]; then printf "on"; else printf "off";
 ALLOBJ		= $(INTERN_OBJ)
 OSXLIBS		= -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 GLLOAD_OBJ	= $(BUILDDIR)/gl_load.o $(BUILDDIR)/gl_load_cpp.o
+INTERN_SHADERCOMAND=
 ifeq ($(OPSYS),Linux)
+	INTERN_SHADERCOMAND+=| head -c -1 | tail -c +3
   GLLOAD_OBJ += $(BUILDDIR)/glx_load.o $(BUILDDIR)/glx_load_cpp.o
 endif
 
@@ -90,7 +92,7 @@ include/mglw_keys.h: glfw/include/GLFW/glfw3.h Makefile
 $(INTERN_SHA): %.h: % Makefile
 	@printf "\e[33mShader $<\e[31m\e[80D"
 	$(SILENT)printf "(const char[]){" > $@
-	$(SILENT)xxd -i $< | grep -x "[0-9a-fx, ]*" | head -c -1 | tail -c +3 >> $@
+	$(SILENT)xxd -i $< | grep -x "[0-9a-fx, ]*" $(INTERN_SHADERCOMAND) >> $@
 	$(SILENT)printf " , 0x00}" >> $@
 	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m\e(B\e[m\n"
 

@@ -1,9 +1,9 @@
-#version 130
+#version 120
 
-in vec3 v_pos;
-in vec2 v_uv;
+attribute vec3 v_pos;
+attribute vec2 v_uv;
 
-out vec2 tex_coord;
+varying vec2 tex_coord;
 
 void main()
 {
