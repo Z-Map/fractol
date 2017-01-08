@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2016/12/26 04:38:09 by qloubier         ###   ########.fr        #
+#    Updated: 2017/01/05 07:23:38 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,11 +33,14 @@ ifeq ($(config),release)
   LIBSUFIX=
 endif
 
+
 INCDIR=-Iinclude -Isrc/include -I$(LIBDIR)/glfw/include -I$(LIBDIR)/glload/include
 LIBDIR=lib
 BUILDDIR=build
 SRCDIR=src
-SRCS=system.c\
+
+SRCS	=\
+	system.c\
 	system/settings.c\
 	system/wlst.c\
 	system/ilst.c\
@@ -52,8 +55,14 @@ SRCS=system.c\
 	texture.c\
 	image_loader.c\
 	error.c\
-	mgl/shaders.c
-SHADERS= pixelbox.vert pixelbox.frag\
+	mgl/shaders.c\
+	mgl/strings/atlas.c\
+	mgl/strings/fromttf.c
+
+SHADERS	= pixelbox.vert pixelbox.frag\
+
+TESTSRC	= test/movesquare.c\
+		test/font.c
 
 OBJ=$(subst /,~,$(SRCS:%.c=%.o))
 
@@ -64,7 +73,6 @@ INTERN_SHA	= $(SHADERS:%=$(SRCDIR)/include/mgl/ressources/shaders/%.h)
 BOBJ_GUARD	= $(shell if [ -d $(BUILDDIR) ]; then printf "on"; else printf "off"; fi)
 ALLOBJ		= $(INTERN_OBJ)
 OSXLIBS		= -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
-TESTSRC		= test/movesquare.c
 GLLOAD_OBJ	= $(BUILDDIR)/gl_load.o $(BUILDDIR)/gl_load_cpp.o
 ifeq ($(OPSYS),Linux)
   GLLOAD_OBJ += $(BUILDDIR)/glx_load.o $(BUILDDIR)/glx_load_cpp.o
@@ -136,9 +144,9 @@ re: fclean all
 
 $(TESTSRC):
 ifeq ($(OPSYS),Linux)
-	$(CC) -o test_mglw $@ $(CFLAGS) -Iinclude -L./ -lGL $(shell pkg-config --static --libs mglw.pc)
+	$(CC) -o test_mglw $@ $(CFLAGS) $(INCDIR) -L./ -lGL $(shell pkg-config --static --libs mglw.pc)
 else
-	$(CC) -o test_mglw $@ $(CFLAGS) -Iinclude -L./ -lmglw $(OSXLIBS)
+	$(CC) -o test_mglw $@ $(CFLAGS) $(INCDIR) -L./ -lmglw $(OSXLIBS)
 endif
 	./test_mglw
 

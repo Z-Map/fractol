@@ -1,13 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   atlas.c                                            :+:      :+:    :+:   */
+/*   string.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/29 05:01:37 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/01 08:50:44 by qloubier         ###   ########.fr       */
+/*   Created: 2017/01/01 08:30:26 by qloubier          #+#    #+#             */
+/*   Updated: 2017/01/01 08:35:10 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mgl/strings.h"
+#ifndef MGL_STRING_H
+#define MGL_STRING_H
+
+# include <string.h>
+
+typedef struct		mgl_string
+{
+	size_t			length;
+	char			*str;
+}					mglstr;
+
+#endif

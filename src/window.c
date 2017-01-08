@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:38 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/21 15:30:15 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/05 07:10:53 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,6 @@ int			mglwin_run(mglwin *win)
 
 	if ((win) && (win->data->state & 1))
 	{
-		if (MGLWtcb[m].drawer)
-			MGLWtcb[m].drawer(win);
 		glfwSwapBuffers(win->data->window);
 		glfwPollEvents();
 		if (glfwWindowShouldClose(win->data->window))
@@ -125,6 +123,8 @@ int			mglwin_run(mglwin *win)
 		glfwMakeContextCurrent(win->data->window);
 		if (MGLWtcb[m].clearer)
 			MGLWtcb[m].clearer(win);
+		if (MGLWtcb[m].drawer)
+			MGLWtcb[m].drawer(win);
 		return (1);
 	}
 	return (0);
