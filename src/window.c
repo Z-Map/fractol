@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:38 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/05 07:10:53 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/20 16:00:19 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,20 @@ mglwin		*mglw_mkwin(mglw_m mode, mglw_f flags)
 
 mglwin		*mglw_openwin(mglwin *win, int x, int y, const char *title)
 {
-	const int	m = win->mode;
+	const int			m = win->mode;
+	const GLFWvidmode	*mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
+	if (win->flags & (MGLW_FULLRES | MGLW_FULLSCREEN))
+	{
+		x = mode->width;
+		y = mode->height;
+	}
 	if ((!win) || (win->data->state & 1) ||
 		!(MGLWtcb[m].opener) || !MGLWtcb[m].opener(win, x, y, title))
 			return (NULL);
+	if (win->flags & MGLW_FULLSCREEN)
+		glfwSetWindowMonitor(win->data->window, glfwGetPrimaryMonitor(),
+			0, 0, x, y, mode->refreshRate);
 	return (win);
 }
 

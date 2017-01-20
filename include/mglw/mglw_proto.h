@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 04:23:16 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/21 14:14:12 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/20 15:17:58 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,8 @@ typedef enum	mglwin_flag
 	MGLW_UNKNOWN		= 1 << 1,
 	MGLW_DRAWTOOLS		= 1 << 2,
 	MGLW_STOP			= 1 << 3,
+	MGLW_FULLSCREEN		= 1 << 4,
+	MGLW_FULLRES		= 1 << 5,
 	MGLW_WINDATAFLAGS	= MGLW_2DLAYER | MGLW_DRAWTOOLS
 }				mglw_f;
 

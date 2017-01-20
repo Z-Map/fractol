@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 14:34:49 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/21 14:44:42 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/20 15:16:11 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ mglwin		*mglw_mkwin(mglw_m mode, mglw_f flags);
 mglwin		*mglw_openwin(mglwin *win, int x, int y, const char *title);
 mglwin		*mglw_initwin(mglwin *win, int x, int y);
 int			mglwin_run(mglwin *win);
+mglwin		*mglwin_fullscreen(mglwin *win, int fullres);
 mglwin		*mglwin_stop(mglwin *win);
 mglwin		*mglwin_shouldclose(mglwin *win);
 mglwin		*mglw_closewin(mglwin *win);
