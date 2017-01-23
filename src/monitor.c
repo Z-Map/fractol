@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/23 13:21:38 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/23 13:57:17 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 14:04:11 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,12 @@ GLFWmonitor	*MGLWgetWinMonitor(mglwin *win)
 		monitors = glfwGetMonitors(&i);
 		if (i == 1)
 			return (*monitors);
-		printf("win : %i, %i\n", wx, wy);
 		while (i--)
 		{
 			mode = glfwGetVideoMode(monitors[i]);
 			glfwGetMonitorPos(monitors[i], &x, &y);
 			mx = x + mode->width;
 			my = y + mode->height;
-			printf("monitor #%i: %i, %i, %i, %i\n", i, x, y, mx, my);
 			if ((wx >= x) && (wy >= y) && (wx < mx) && (wy < my))
 			{
 				monitor = monitors[i];
