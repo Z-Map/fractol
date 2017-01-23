@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 14:34:49 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/23 11:26:20 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 13:26:48 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 #include "mglw_intern/system.h"
 
 #include "mglw/window.h"
+
+/* MiniGLwin Window monitor tool */
+
+GLFWmonitor	*MGLWgetWinMonitor(mglwin *win);
 
 /* MiniGLwin Window event processing */
 

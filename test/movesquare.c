@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:55 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/23 13:05:11 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 13:54:55 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct		test_context
 	int				mx;
 	int				my;
 	int				size;
+	int				fullscreen;
 }					tctx;
 
 int		keypress(void *c, int k)
@@ -39,6 +40,8 @@ int		keypress(void *c, int k)
 		ctx->x -= 5;
 	else if (k == MGLW_KEY_D)
 		ctx->x += 5;
+	else if (k == MGLW_KEY_F)
+		ctx->fullscreen = 1;
 	return (0);
 }
 
@@ -90,11 +93,12 @@ void	init_ctx(tctx *ctx, mglimg *img, int size)
 	ctx->y = (img->y / 2) - (size / 2);
 	ctx->mx = img->x - size;
 	ctx->my = img->y - size;
+	ctx->fullscreen = 0;
 }
 
 void	draw(tctx *ctx, mglimg *img)
 {
-	static tctx		last = { 0, 0, 0, 0, 0};
+	static tctx		last = { 0, 0, 0, 0, 0, 0};
 	int				x, y, i, j;
 	unsigned int	*pxs;
 
@@ -161,6 +165,11 @@ int		main()
 	mglw_setsizecb(win, &resizeprocess, &ctx);
 	while (mglwin_run(win))
 	{
+		if (ctx.fullscreen)
+		{
+			mglwin_togglefullscreen(win, 1);
+			ctx.fullscreen = 0;
+		}
 		draw(&ctx, img);
 		nanosleep(&t, NULL);
 	}

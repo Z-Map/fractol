@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2017/01/08 17:55:56 by qloubier         ###   ########.fr        #
+#    Updated: 2017/01/23 13:41:24 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,6 +51,7 @@ SRCS	=\
 	window/opengl3.c\
 	window/opengl4.c\
 	window/vulkan.c\
+	monitor.c\
 	image.c\
 	texture.c\
 	image_loader.c\

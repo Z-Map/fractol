@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 21:59:43 by map               #+#    #+#             */
-/*   Updated: 2017/01/23 12:44:23 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 13:59:52 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,11 @@ void		MGLWsizeprocess(GLFWwindow *win, int w, int h)
 	mglw_wd *const	wdata = (mglw_wd *)glfwGetWindowUserPointer(win);
 	void			(*sizecb)(void *, int, int) = wdata->sizecb;
 
-	wdata->win_w = w;
-	wdata->win_h = h;
+	if (!(wdata->flags & (MGLW_FULLRES | MGLW_FULLSCREEN)))
+	{
+		wdata->win_w = w;
+		wdata->win_h = h;
+	}
 	glViewport(0, 0, w, h);
 	if (wdata->flags & MGLW_2DLAYER)
 		mglw_resizeimg((mglimg *)(wdata->layer2D), w, h, MGLW_TF_UNDEFINED);
@@ -58,8 +61,11 @@ void		MGLWpositionprocess(GLFWwindow *win, int x, int y)
 {
 	mglw_wd *const	wdata = (mglw_wd *)glfwGetWindowUserPointer(win);
 
-	wdata->win_x = x;
-	wdata->win_y = y;
+	if (!(wdata->flags & MGLW_FULLSCREEN))
+	{
+		wdata->win_x = x;
+		wdata->win_y = y;
+	}
 }
 
 void		MGLWkeyprocess(GLFWwindow *win, int k, int sc, int s, int m)
