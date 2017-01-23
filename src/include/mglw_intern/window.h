@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 14:34:49 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/21 15:30:25 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 11:26:20 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 /* MiniGLwin Window event processing */
 
 void		MGLWkeyprocess(GLFWwindow *win, int k, int sc, int s, int m);
+void		MGLWsizeprocess(GLFWwindow *win, int w, int h);
+void		MGLWpositionprocess(GLFWwindow *win, int x, int y);
 
 /* MiniGLwin Window Type callbacks */
 

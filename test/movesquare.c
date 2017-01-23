@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:55 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/22 19:57:07 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 13:05:11 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,25 @@ int		keyrelease(void *c, int k)
 	return (0);
 }
 
+void	resizeprocess(void *c, int w, int h)
+{
+	tctx	*ctx = (tctx *)c;
+
+	printf("coucou %i, %i\n", w, h);
+	ctx->mx = w - ctx->size;
+	ctx->my = h - ctx->size;
+}
+
 int		keyprocess(tctx *ctx, tctx *kctx)
 {
 	ctx->x += kctx->x;
 	ctx->y += kctx->y;
-	if (ctx->x > ctx->mx)
-		ctx->x = ctx->mx;
+	if (ctx->x > kctx->mx)
+		ctx->x = kctx->mx;
 	else if (ctx->x < 0)
 		ctx->x = 0;
-	if (ctx->y > ctx->my)
-		ctx->y = ctx->my;
+	if (ctx->y > kctx->my)
+		ctx->y = kctx->my;
 	else if (ctx->y < 0)
 		ctx->y = 0;
 	return (0);
@@ -92,10 +101,21 @@ void	draw(tctx *ctx, mglimg *img)
 	pxs = (unsigned int *)(img->pixels);
 	if (last.size)
 	{
-		j = last.y + last.size;
-		for (y = last.y; y < j; y++){
-			x = y * img->x + last.x;
-			bzero(pxs + x, last.size * sizeof(int));
+		if ((last.x <= ctx->mx) || (last.y <= ctx->my))
+		{
+			j = last.y + last.size;
+			if (j > (ctx->my + ctx->size))
+				j = ctx->my + ctx->size;
+			if ((last.x + last.size) > (ctx->mx + ctx->size))
+			{
+				last.x = ctx->mx;
+				last.size = ctx->size;
+			}
+			for (y = last.y; y < j; y++){
+				x = y * img->x + last.x;
+				bzero(pxs + x, last.size * sizeof(int));
+			}
+			last.size = ctx->size;
 		}
 	}
 	if (ctx->size)
@@ -123,7 +143,7 @@ int		main()
 	const struct timespec	t = (struct timespec){0, 12000000L};
 	mglwin					*win;
 	mglimg					*img;
-	// mglimg					*pinguin;
+	// mglimg				*pinguin;
 	tctx					ctx;
 
 	if (!(mglw_init()) ||
@@ -138,6 +158,7 @@ int		main()
 	init_ctx(&ctx, img, 20);
 	mglw_setkcb(win, 1, &keypress, &ctx);
 	mglw_setkcb(win, 0, &keyrelease, &ctx);
+	mglw_setsizecb(win, &resizeprocess, &ctx);
 	while (mglwin_run(win))
 	{
 		draw(&ctx, img);

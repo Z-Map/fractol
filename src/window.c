@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:38 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/20 16:00:19 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 11:53:54 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,18 @@ static const struct wintypecb
 
 mglwin		*mglw_mkwin(mglw_m mode, mglw_f flags)
 {
+	mglw_sys *const	sys = MGLWgetsys();
 	mglwin			win;
-	mglw_wd		wdata;
+	mglw_wd			wdata;
 	mglwin			*ret;
 
 	if (!mode)
 		return (NULL);
-	wdata = (mglw_wd){ .user = 1, .state = 0, .window = NULL,
+	wdata = (mglw_wd){ .user = 1, .state = 0,
+		.win_x = 0, .win_y = 0,
+		.win_w = sys->settings[MGLWS_DEFAULT_WWIDTH],
+		.win_h = sys->settings[MGLWS_DEFAULT_WHEIGHT],
+		.window = NULL,
 		.flags = flags & MGLW_WINDATAFLAGS,
 		.layer2D = NULL, .draw_vao = 0,
 		.draw_buffers = {0, 0, 0, 0, 0, 0, 0, 0}, .draw_tex = {0, 0, 0, 0},
@@ -86,18 +91,29 @@ mglwin		*mglw_openwin(mglwin *win, int x, int y, const char *title)
 {
 	const int			m = win->mode;
 	const GLFWvidmode	*mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	int					w, h;
 
-	if (win->flags & (MGLW_FULLRES | MGLW_FULLSCREEN))
+	if ((!win) || (win->data->state & 1) ||
+		!(MGLWtcb[m].opener))
+			return (NULL);
+	w = x;
+	h = y;
+	if ((win->data->flags & MGLW_FULLRES) &&
+		(win->data->flags & MGLW_FULLSCREEN))
 	{
 		x = mode->width;
 		y = mode->height;
 	}
-	if ((!win) || (win->data->state & 1) ||
-		!(MGLWtcb[m].opener) || !MGLWtcb[m].opener(win, x, y, title))
-			return (NULL);
-	if (win->flags & MGLW_FULLSCREEN)
+	if (!MGLWtcb[m].opener(win, x, y, title))
+		return (NULL);
+	if (win->data->flags & MGLW_FULLSCREEN)
 		glfwSetWindowMonitor(win->data->window, glfwGetPrimaryMonitor(),
 			0, 0, x, y, mode->refreshRate);
+	glfwGetWindowPos(win->data->window,
+		&(win->data->win_x), &(win->data->win_y));
+	win->data->win_w = w;
+	win->data->win_h = h;
+	glfwFocusWindow(win->data->window);
 	return (win);
 }
 
@@ -111,6 +127,8 @@ mglwin		*mglw_initwin(mglwin *win, int x, int y)
 	win->data->state |= 1;
 	glfwSetWindowUserPointer(win->data->window, win->data);
 	glfwSetKeyCallback(win->data->window, &MGLWkeyprocess);
+	glfwSetWindowPosCallback(win->data->window, &MGLWpositionprocess);
+	glfwSetWindowSizeCallback(win->data->window, &MGLWsizeprocess);
 	return (win);
 }
 
@@ -138,6 +156,44 @@ int			mglwin_run(mglwin *win)
 	}
 	return (0);
 }
+
+mglwin		*mglwin_togglefullscreen(mglwin *win, int fullres)
+{
+	const GLFWvidmode	*mode;
+	int					x, y;
+
+	if (!win)
+		return (NULL);
+	if (win->data->flags & MGLW_FULLSCREEN)
+	{
+		win->data->flags &= ~MGLW_FULLSCREEN;
+		if (fullres > 0)
+			win->data->flags &= ~MGLW_FULLRES;
+		if (win->data->state & 1)
+			glfwSetWindowMonitor(win->data->window, NULL,
+				win->data->win_x, win->data->win_y,
+				win->data->win_w, win->data->win_h, 0);
+	}
+	else
+	{
+		mode = glfwGetVideoMode(glfwGetWindowMonitor(win->data->window));
+		x = win->data->win_w;
+		y = win->data->win_h;
+		if (fullres > 0 || ((fullres < 0) && (win->flags & MGLW_FULLRES)))
+		{
+			x = mode->width;
+			y = mode->height;
+			win->data->flags |= MGLW_FULLRES;
+		}
+		win->data->flags |= MGLW_FULLSCREEN;
+		if (win->data->state & 1)
+			glfwSetWindowMonitor(win->data->window,
+				glfwGetWindowMonitor(win->data->window),
+				0, 0, x, y, mode->refreshRate);
+	}
+	return (win);
+}
+
 
 mglwin		*mglwin_stop(mglwin *win)
 {

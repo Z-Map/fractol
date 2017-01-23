@@ -6,11 +6,19 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 21:59:43 by map               #+#    #+#             */
-/*   Updated: 2016/12/21 15:31:28 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 12:44:23 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mglw_intern/window.h"
+#include "mglw_intern/image.h"
+
+mglwin		*mglw_setsizecb(mglwin *win, void (*f)(void *, int, int), void *arg)
+{
+	win->data->sizecb = f;
+	win->data->sizecb_arg = arg;
+	return (win);
+}
 
 mglwin		*mglw_setkcb(mglwin *win, int s, int (*f)(void *, int), void *arg)
 {
@@ -32,11 +40,33 @@ mglwin		*mglw_setkcb(mglwin *win, int s, int (*f)(void *, int), void *arg)
 	return (win);
 }
 
+void		MGLWsizeprocess(GLFWwindow *win, int w, int h)
+{
+	mglw_wd *const	wdata = (mglw_wd *)glfwGetWindowUserPointer(win);
+	void			(*sizecb)(void *, int, int) = wdata->sizecb;
+
+	wdata->win_w = w;
+	wdata->win_h = h;
+	glViewport(0, 0, w, h);
+	if (wdata->flags & MGLW_2DLAYER)
+		mglw_resizeimg((mglimg *)(wdata->layer2D), w, h, MGLW_TF_UNDEFINED);
+	if (sizecb)
+		sizecb(wdata->sizecb_arg, w, h);
+}
+
+void		MGLWpositionprocess(GLFWwindow *win, int x, int y)
+{
+	mglw_wd *const	wdata = (mglw_wd *)glfwGetWindowUserPointer(win);
+
+	wdata->win_x = x;
+	wdata->win_y = y;
+}
+
 void		MGLWkeyprocess(GLFWwindow *win, int k, int sc, int s, int m)
 {
 	mglw_wd *const	wdata = (mglw_wd *)glfwGetWindowUserPointer(win);
-	int					(*kcb)(void *, int) = wdata->kcb[s];
-	int					ret;
+	int				(*kcb)(void *, int) = wdata->kcb[s];
+	int				ret;
 
 	(void)m;
 	(void)sc;

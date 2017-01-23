@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 15:03:37 by qloubier          #+#    #+#             */
-/*   Updated: 2016/12/21 15:38:38 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 12:21:07 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ mglimg		*mglw_setimg(mglimg *img, unsigned char *pixels);
 mglimg		*mglw_unsetimg(mglimg *img);
 mglimg		*mglw_resetimg(mglimg *img);
 mglimg		*mglw_reloadimg(mglimg *img, const char *filename);
+mglimg		*mglw_resizeimg(mglimg *img, int x, int y, mglw_tf fmt);
 void		mglw_rmimg(mglimg *img);
 void		mglw_unloadimg(mglimg *img);
 

@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 01:55:52 by map               #+#    #+#             */
-/*   Updated: 2016/12/21 15:41:43 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 12:31:50 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,10 @@ mglimg		*mglw_mkimage(int x, int y, mglw_tf fmt,  mglw_if flags)
 	mglimg			*ret;
 
 	flags &= MGLWI_USERFLAG;
+	if (!fmt)
+		fmt = sys->settings[MGLWS_DEFAULT_IFORMAT];
 	bpp = MGLWgetBpp(fmt, flags);
-	if (bpp <= 1)
+	if (!bpp)
 		bpp = sys->settings[MGLWS_DEFAULT_IBPP];
 	img = (mglimg){ .x = (uint)x, .y = (uint)y,
 		.bpp = (uint)bpp, .flags = flags,
@@ -52,6 +54,8 @@ mglimg		*mglw_dupimg(mglimg *img)
 {
 	mglimg			*ret;
 
+	if (!img)
+		return (NULL);
 	if (img->flags & MGLWI_TEXTURE)
 		ret = (mglimg *)mglw_mktexture(
 			(int)img->x, (int)img->y, img->format, img->flags);
@@ -67,6 +71,8 @@ mglimg		*mglw_setimg(mglimg *img, uchar *pixels)
 	size_t			dsize;
 	mglimg			*ret;
 
+	if (!img)
+		return (NULL);
 	if (pixels)
 	{
 		if ((img->pixels) && (img->flags & MGLWI_DYNAMIC)
@@ -98,6 +104,8 @@ mglimg		*mglw_resetimg(mglimg *img)
 	mglimg			*ret;
 	uchar			*pxs;
 
+	if (!img)
+		return (NULL);
 	if (!(img->flags & MGLWI_DYNAMIC))
 	{
 		if (!(ret = mglw_mkimage(
@@ -127,7 +135,7 @@ mglimg		*mglw_unsetimg(mglimg *img)
 	size_t			dsize;
 	mglimg			*ret;
 
-	if (img->pixels)
+	if (img && (img->pixels))
 	{
 		if (img->flags & MGLWI_LOADED)
 			mglw_unloadimg(img);
@@ -148,6 +156,31 @@ mglimg		*mglw_unsetimg(mglimg *img)
 		}
 		img->pixels = NULL;
 	}
+	return (img);
+}
+
+mglimg		*mglw_resizeimg(mglimg *img, int x, int y, mglw_tf fmt)
+{
+	uchar			*pxs;
+	int				bpp;
+	size_t			memlen;
+
+	if (!img)
+		return (NULL);
+	if (fmt == MGLW_TF_UNDEFINED)
+		fmt = img->format;
+	bpp = MGLWgetBpp(fmt, img->flags);
+	if (!bpp)
+		bpp = mglw_getsetting(MGLWS_DEFAULT_IBPP);
+	memlen = (size_t)(x * y * bpp);
+	if (!(pxs = malloc(memlen)) || !mglw_unsetimg(img))
+		return (NULL);
+	img->x = x;
+	img->y = y;
+	img->format = fmt;
+	img->bpp = bpp;
+	img->memlen = memlen;
+	img->pixels = pxs;
 	return (img);
 }
 

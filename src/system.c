@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/17 00:28:32 by map               #+#    #+#             */
-/*   Updated: 2016/12/22 17:38:38 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 10:49:06 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static mglw_sys		mglw_Singletone_System = (mglw_sys){
 	.error = 0, .wlst = NULL, .ilst = NULL,
 	.settings={
 		GLFW_KEY_UNKNOWN,
-		MGLW_LEGACY_MODE, 0,
+		MGLW_LEGACY_MODE, 800, 600, 0,
 		MGLWI_NONE, 3, MGLW_RGB,
 		MGLWI_NONE, MGLW_RGB,
 		0 }

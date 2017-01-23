@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 04:23:16 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/20 15:17:58 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/01/23 10:48:35 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,8 @@ typedef enum	mglw_settings
 {
 	MGLWS_EXITKEY		= 0,
 	MGLWS_DEFAULT_WM,
+	MGLWS_DEFAULT_WWIDTH,
+	MGLWS_DEFAULT_WHEIGHT,
 	MGLWS_LEGACY_MODERN,
 	MGLWS_DEFAULT_IFLAG,
 	MGLWS_DEFAULT_IBPP,
@@ -191,7 +193,8 @@ typedef enum	mglwin_flag
 	MGLW_STOP			= 1 << 3,
 	MGLW_FULLSCREEN		= 1 << 4,
 	MGLW_FULLRES		= 1 << 5,
-	MGLW_WINDATAFLAGS	= MGLW_2DLAYER | MGLW_DRAWTOOLS
+	MGLW_WINDATAFLAGS	= MGLW_2DLAYER | MGLW_DRAWTOOLS |
+		MGLW_FULLSCREEN | MGLW_FULLRES
 }				mglw_f;
 
 typedef enum	mglw_imgflag
