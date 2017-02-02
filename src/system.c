@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/17 00:28:32 by map               #+#    #+#             */
-/*   Updated: 2017/01/23 10:49:06 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/02/02 17:47:08 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,9 @@ int			mglw_close()
 	i += MGLWdelallimg();
 	glfwTerminate();
 	return (i);
+}
+
+double		mglw_time()
+{
+	return glfwGetTime();
 }
