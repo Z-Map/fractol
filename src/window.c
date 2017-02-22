@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:38 by qloubier          #+#    #+#             */
-/*   Updated: 2017/02/19 15:35:15 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/02/22 01:06:02 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ int			mglwin_run(mglwin *win)
 
 	if ((win) && (win->data->state & 1))
 	{
+		glfwMakeContextCurrent(win->data->window);
 		if (MGLWtcb[m].drawer)
 			MGLWtcb[m].drawer(win);
 		glfwSwapBuffers(win->data->window);
@@ -148,7 +149,11 @@ int			mglwin_run(mglwin *win)
 			return (0);
 		}
 		if ((win->flags | win->data->flags)  & MGLW_STOP)
+		{
+			win->flags &= ~MGLW_STOP;
+			win->data->flags &= ~MGLW_STOP;
 			return (0);
+		}
 		glfwMakeContextCurrent(win->data->window);
 		if (MGLWtcb[m].clearer)
 			MGLWtcb[m].clearer(win);
@@ -200,7 +205,7 @@ mglwin		*mglwin_togglefullscreen(mglwin *win, int fullres)
 
 mglwin		*mglwin_stop(mglwin *win)
 {
-	win->flags &= MGLW_STOP;
+	win->flags |= MGLW_STOP;
 	return (win);
 }
 
