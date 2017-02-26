@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 21:24:32 by map               #+#    #+#             */
-/*   Updated: 2017/01/04 08:50:08 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/02/26 16:21:12 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void		MGLWclearer_legacy(mglwin *win)
 void		MGLWimagedraw_legacy(mglwin *win, mglimg *img, int x, int y)
 {
 	static mglsha	shr = (mglsha){ 0, 0, 0, NULL, NULL};
+	GLint			loc;
 
 	if (!win || !img)
 		return ;
@@ -70,6 +71,12 @@ void		MGLWimagedraw_legacy(mglwin *win, mglimg *img, int x, int y)
 		glBindAttribLocation(shr.id, 1, "v_uv");
 		// glUniform1i(glGetUniformLocation(shr.id, "image" ), 0);
 	}
+	loc = glGetUniformLocation(shr.id, "screen");
+	glUniform2f(loc, (float)(win->data->screen_w), (float)(win->data->screen_h));
+	loc = glGetUniformLocation(shr.id, "size");
+	glUniform2f(loc, (float)img->x, (float)img->y);
+	loc = glGetUniformLocation(shr.id, "position");
+	glUniform2f(loc, (float)x, (float)y);
 	glUseProgram(shr.id);
 	glPushAttrib(GL_COLOR_BUFFER_BIT|GL_CURRENT_BIT);
 	glEnable(GL_BLEND);
@@ -88,8 +95,6 @@ void		MGLWimagedraw_legacy(mglwin *win, mglimg *img, int x, int y)
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	(void)x;
-	(void)y;
 	glDisableVertexAttribArray(0);
 	glPopAttrib(GL_COLOR_BUFFER_BIT|GL_CURRENT_BIT);
 }

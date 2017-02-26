@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:55 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/23 13:54:55 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/02/26 17:12:53 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <string.h>
 #include <time.h>
 #include "mglw/mglw.h"
-#include "mglw_keys.h"
 
 #define CUBECOL 0xff0000ff
 
@@ -147,7 +146,7 @@ int		main()
 	const struct timespec	t = (struct timespec){0, 12000000L};
 	mglwin					*win;
 	mglimg					*img;
-	// mglimg				*pinguin;
+	// mglimg					*doggo;
 	tctx					ctx;
 
 	if (!(mglw_init()) ||
@@ -157,7 +156,7 @@ int		main()
 		return (-1);
 	mglw_setsetting(MGLWS_EXITKEY, MGLW_KEY_ESCAPE);
 	img = (mglimg *)mglw_get2dlayer(win);
-	// pinguin = mglw_loadimage("ping.jpg", MGLWI_NONE, 4);
+	// doggo = mglw_loadimage("doggo.jpg", MGLWI_NONE, 4);
 	// memcpy(img->pixels, pinguin->pixels, img->memlen);
 	init_ctx(&ctx, img, 20);
 	mglw_setkcb(win, 1, &keypress, &ctx);
@@ -165,6 +164,7 @@ int		main()
 	mglw_setsizecb(win, &resizeprocess, &ctx);
 	while (mglwin_run(win))
 	{
+		// mglw_draw_itow(win, doggo, 0, 0);
 		if (ctx.fullscreen)
 		{
 			mglwin_togglefullscreen(win, 1);

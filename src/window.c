@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:38 by qloubier          #+#    #+#             */
-/*   Updated: 2017/02/22 01:06:02 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/02/26 16:29:38 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ mglwin		*mglw_openwin(mglwin *win, int x, int y, const char *title)
 		&(win->data->win_x), &(win->data->win_y));
 	win->data->win_w = w;
 	win->data->win_h = h;
+	win->data->screen_w = w;
+	win->data->screen_h = h;
 	glfwFocusWindow(win->data->window);
 	return (win);
 }
@@ -127,6 +129,9 @@ mglwin		*mglw_initwin(mglwin *win, int x, int y)
 	win->data->state |= 1;
 	glfwSetWindowUserPointer(win->data->window, win->data);
 	glfwSetKeyCallback(win->data->window, &MGLWkeyprocess);
+	glfwSetMouseButtonCallback(win->data->window, &MGLWmousebuttonprocess);
+	glfwSetCursorPosCallback(win->data->window, &MGLWmouseprocess);
+	glfwSetScrollCallback(win->data->window, &MGLWmousewheelprocess);
 	glfwSetWindowPosCallback(win->data->window, &MGLWpositionprocess);
 	glfwSetWindowSizeCallback(win->data->window, &MGLWsizeprocess);
 	return (win);

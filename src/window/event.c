@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 21:59:43 by map               #+#    #+#             */
-/*   Updated: 2017/01/23 13:59:52 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/02/26 16:23:47 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,21 @@ mglwin		*mglw_setsizecb(mglwin *win, void (*f)(void *, int, int), void *arg)
 {
 	win->data->sizecb = f;
 	win->data->sizecb_arg = arg;
+	return (win);
+}
+
+mglwin		*mglw_setmcb(mglwin *win, int s, int (*f)(void *, double, double), void *arg)
+{
+	if (s)
+	{
+		win->data->mcb[1] = f;
+		win->data->mcb_args[1] = arg;
+	}
+	else
+	{
+		win->data->mcb[0] = f;
+		win->data->mcb_args[0] = arg;
+	}
 	return (win);
 }
 
@@ -45,6 +60,8 @@ void		MGLWsizeprocess(GLFWwindow *win, int w, int h)
 	mglw_wd *const	wdata = (mglw_wd *)glfwGetWindowUserPointer(win);
 	void			(*sizecb)(void *, int, int) = wdata->sizecb;
 
+	wdata->screen_w = w;
+	wdata->screen_h = h;
 	if (!(wdata->flags & (MGLW_FULLRES | MGLW_FULLSCREEN)))
 	{
 		wdata->win_w = w;
@@ -66,6 +83,31 @@ void		MGLWpositionprocess(GLFWwindow *win, int x, int y)
 		wdata->win_x = x;
 		wdata->win_y = y;
 	}
+}
+
+void		MGLWmouseprocess(GLFWwindow* window, double xpos, double ypos)
+{
+	mglw_wd *const	wdata = (mglw_wd *)glfwGetWindowUserPointer(window);
+	int				(*mcb)(void *, double, double) = wdata->mcb[0];
+
+	// printf("move %f, %f\n", xpos, ypos);
+	if (mcb)
+		mcb(wdata->mcb_args[0], xpos, ypos);
+}
+
+void		MGLWmousewheelprocess(GLFWwindow* window, double xpos, double ypos)
+{
+	mglw_wd *const	wdata = (mglw_wd *)glfwGetWindowUserPointer(window);
+	int				(*mcb)(void *, double, double) = wdata->mcb[1];
+
+	// printf("wheel %f, %f\n", xpos, ypos);
+	if (mcb)
+		mcb(wdata->mcb_args[1], xpos, ypos);
+}
+
+void		MGLWmousebuttonprocess(GLFWwindow *win, int k, int s, int m)
+{
+	MGLWkeyprocess(win, k, -1, s, m);
 }
 
 void		MGLWkeyprocess(GLFWwindow *win, int k, int sc, int s, int m)

@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 14:34:49 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/23 12:43:59 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/02/26 16:16:54 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,7 @@ int			mglwin_is_running(mglwin *win);
 mgltex		*mglw_get2dlayer(mglwin *win);
 mglwin		*mglw_setkcb(mglwin *win, int s, int (*f)(void *, int), void *a);
 mglwin		*mglw_setsizecb(mglwin *win, void (*f)(void *, int, int), void *a);
+mglwin		*mglw_setmcb(mglwin *win, int s,
+				int (*f)(void *, double, double), void *a);
 
 #endif

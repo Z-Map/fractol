@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 14:34:49 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/23 13:26:48 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/02/26 15:41:27 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ GLFWmonitor	*MGLWgetWinMonitor(mglwin *win);
 
 /* MiniGLwin Window event processing */
 
+void		MGLWmouseprocess(GLFWwindow* window, double xpos, double ypos);
+void		MGLWmousewheelprocess(GLFWwindow* window, double xpos, double ypos);
+void		MGLWmousebuttonprocess(GLFWwindow *win, int k, int s, int m);
 void		MGLWkeyprocess(GLFWwindow *win, int k, int sc, int s, int m);
 void		MGLWsizeprocess(GLFWwindow *win, int w, int h);
 void		MGLWpositionprocess(GLFWwindow *win, int x, int y);

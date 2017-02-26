@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/21 13:49:08 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/23 11:21:28 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/02/26 12:43:51 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ struct			mglw_win_data
 	int				win_y;
 	int				win_w;
 	int				win_h;
+	int				screen_w;
+	int				screen_h;
 	GLFWwindow		*window;
 	mglw_f			flags;
 	mgltex			*layer2D;
@@ -33,6 +35,8 @@ struct			mglw_win_data
 	double			optime;
 	void			*kcb[3];
 	void			*kcb_args[3];
+	void			*mcb[2];
+	void			*mcb_args[2];
 	void			*sizecb;
 	void			*sizecb_arg;
 };
