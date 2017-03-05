@@ -6,10 +6,12 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:55 by qloubier          #+#    #+#             */
-/*   Updated: 2017/02/26 17:12:53 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/03/03 17:45:07 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "glload/gl_all.h"
+#include "glload/gl_load.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -158,6 +160,7 @@ int		main()
 	img = (mglimg *)mglw_get2dlayer(win);
 	// doggo = mglw_loadimage("doggo.jpg", MGLWI_NONE, 4);
 	// memcpy(img->pixels, pinguin->pixels, img->memlen);
+	bzero(img->pixels, img->memlen);
 	init_ctx(&ctx, img, 20);
 	mglw_setkcb(win, 1, &keypress, &ctx);
 	mglw_setkcb(win, 0, &keyrelease, &ctx);
@@ -165,6 +168,21 @@ int		main()
 	while (mglwin_run(win))
 	{
 		// mglw_draw_itow(win, doggo, 0, 0);
+		// glDisable(GL_DEPTH_TEST);
+		// glDisable(GL_CULL_FACE);
+		// glDisable(GL_TEXTURE_2D);
+		glColor3f(1.0f, 0.8f, 0.15f);
+		glBegin(GL_TRIANGLES);
+		glVertex3f(-0.5f, -0.5f, 0.0f);
+		glVertex3f( 0.0f, -0.5f, 0.0f);
+		glVertex3f(-0.25f, 0.0f, 0.0f);
+		glVertex3f( 0.5f, -0.5f, 0.0f);
+		glVertex3f( 0.0f, -0.5f, 0.0f);
+		glVertex3f(0.25f, 0.0f, 0.0f);
+		glVertex3f( -0.25f, 0.0f, 0.0f);
+		glVertex3f( 0.25f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.5f, 0.0f);
+		glEnd();
 		if (ctx.fullscreen)
 		{
 			mglwin_togglefullscreen(win, 1);

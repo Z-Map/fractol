@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 21:24:32 by map               #+#    #+#             */
-/*   Updated: 2017/02/26 16:21:12 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/03/03 17:56:51 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,13 @@ void		MGLWimagedraw_legacy(mglwin *win, mglimg *img, int x, int y)
 		glBindAttribLocation(shr.id, 1, "v_uv");
 		// glUniform1i(glGetUniformLocation(shr.id, "image" ), 0);
 	}
+	glUseProgram(shr.id);
 	loc = glGetUniformLocation(shr.id, "screen");
 	glUniform2f(loc, (float)(win->data->screen_w), (float)(win->data->screen_h));
 	loc = glGetUniformLocation(shr.id, "size");
 	glUniform2f(loc, (float)img->x, (float)img->y);
 	loc = glGetUniformLocation(shr.id, "position");
 	glUniform2f(loc, (float)x, (float)y);
-	glUseProgram(shr.id);
 	glPushAttrib(GL_COLOR_BUFFER_BIT|GL_CURRENT_BIT);
 	glEnable(GL_BLEND);
 	glEnable(GL_ALPHA_TEST);
@@ -97,6 +97,7 @@ void		MGLWimagedraw_legacy(mglwin *win, mglimg *img, int x, int y)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisableVertexAttribArray(0);
 	glPopAttrib(GL_COLOR_BUFFER_BIT|GL_CURRENT_BIT);
+	glUseProgram(0);
 }
 
 void		MGLWdrawer_legacy(mglwin *win)

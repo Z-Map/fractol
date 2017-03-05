@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2017/01/23 13:41:24 by qloubier         ###   ########.fr        #
+#    Updated: 2017/03/02 16:07:47 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME		= libmglw.a
 LINKNAME	= mglw
 PROJECTNAME	= mglw
 SILENT		= @
-CFLAGS		= -Wall -Werror -Wextra
+CFLAGS		= #-Wall -Werror -Wextra
 
 ifndef CC
   CC=clang
