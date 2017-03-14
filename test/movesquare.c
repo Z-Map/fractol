@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:55 by qloubier          #+#    #+#             */
-/*   Updated: 2017/03/03 17:45:07 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/03/14 16:41:52 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ int		main()
 		glEnd();
 		if (ctx.fullscreen)
 		{
-			mglwin_togglefullscreen(win, 1);
+			mglw_togglefullscreen(win, 1);
 			ctx.fullscreen = 0;
 		}
 		draw(&ctx, img);

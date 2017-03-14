@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/01 08:49:30 by qloubier          #+#    #+#             */
-/*   Updated: 2017/01/05 18:45:10 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/03/14 16:56:24 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,6 @@ mglca			mgl_ttf_to_charatlas(const char *ttfpath, int *chartab,
 
 	// Load the font
 	load_ttf(ttfpath, &font, fbuf);
-	puts("coucou ttf");
 	// Get font size ratio for the maximum size of render :
 	//*	fixed at 102 pixels for now
 	//*	(because 1024 / 10 so ~ 100 char fill a 1k texture)
@@ -196,7 +195,6 @@ mglca			mgl_ttf_to_charatlas(const char *ttfpath, int *chartab,
 		stbtt_MakeGlyphBitmap(&font, tex + x + (y * tw), gw, gh, tw, fs, fs, g);
 		x += bw + 1;
 	}
-	puts("coucou les amis");
 	// Gen GL texture
 	glGenTextures(1, &texid);
 	ca.texture = texid;

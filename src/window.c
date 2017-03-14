@@ -6,7 +6,7 @@
 /*   By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 04:05:38 by qloubier          #+#    #+#             */
-/*   Updated: 2017/02/26 16:29:38 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/03/14 19:46:55 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,36 @@ mglwin		*mglw_initwin(mglwin *win, int x, int y)
 	return (win);
 }
 
+mglwin		*mglw_closewin(mglwin *win)
+{
+	const int	m = win->mode;
+
+	if ((win) && (win->data->state & 1))
+	{
+		if (win->flags & MGLW_2DLAYER)
+			mglw_rmimg((mglimg *)(win->data->layer2D));
+		if (MGLWtcb[m].closer)
+			MGLWtcb[m].closer(win);
+		glfwDestroyWindow(win->data->window);
+		win->data->state = 0;
+	}
+	return (win);
+}
+
+void		mglw_rmwin(mglwin *win)
+{
+	if (!win)
+		return ;
+	MGLWdelwin(win);
+	win->data->user -= 1;
+	if (!(win->data->user))
+	{
+		mglw_closewin(win);
+		free(win->data);
+	}
+	free(win);
+}
+
 int			mglwin_run(mglwin *win)
 {
 	const int	m = win->mode;
@@ -167,7 +197,79 @@ int			mglwin_run(mglwin *win)
 	return (0);
 }
 
-mglwin		*mglwin_togglefullscreen(mglwin *win, int fullres)
+void		mglwin_draw(mglwin *win)
+{
+	const int	m = win->mode;
+
+	if ((win) && (win->data->state & 1))
+	{
+		glfwMakeContextCurrent(win->data->window);
+		if (MGLWtcb[m].drawer)
+			MGLWtcb[m].drawer(win);
+		glfwSwapBuffers(win->data->window);
+	}
+}
+
+int			mglwin_process_event(mglwin *win)
+{
+	if ((win) && (win->data->state & 1))
+	{
+		glfwPollEvents();
+		if (glfwWindowShouldClose(win->data->window))
+		{
+			mglw_closewin(win);
+			return (0);
+		}
+		if ((win->flags | win->data->flags)  & MGLW_STOP)
+		{
+			win->flags &= ~MGLW_STOP;
+			win->data->flags &= ~MGLW_STOP;
+			return (0);
+		}
+		return (1);
+	}
+	return (0);
+}
+
+int			mglwin_is_running(mglwin *win)
+{
+	if ((win) && (win->data->state & 1) &&
+		!(glfwWindowShouldClose(win->data->window)
+		|| ((win->flags | win->data->flags)  & MGLW_STOP)))
+		return (1);
+	return (0);
+}
+
+void		mglwin_clear(mglwin *win)
+{
+	const int	m = win->mode;
+
+	if ((win) && (win->data->state & 1))
+	{
+		glfwMakeContextCurrent(win->data->window);
+		if (MGLWtcb[m].clearer)
+			MGLWtcb[m].clearer(win);
+	}
+}
+
+mglwin		*mglwin_stop(mglwin *win)
+{
+	win->flags |= MGLW_STOP;
+	return (win);
+}
+
+mglwin		*mglw_setGLContext(mglwin *win)
+{
+	if (!win)
+		glfwMakeContextCurrent(NULL);
+	else if (win->data->state & 1)
+		glfwMakeContextCurrent(win->data->window);
+	else
+		return (NULL);
+	return (win);
+}
+
+mglwin		*mglw_togglefullscreen(mglwin *win, int fullres)
 {
 	const GLFWvidmode	*mode;
 	GLFWmonitor			*monitor;
@@ -208,24 +310,6 @@ mglwin		*mglwin_togglefullscreen(mglwin *win, int fullres)
 }
 
 
-mglwin		*mglwin_stop(mglwin *win)
-{
-	win->flags |= MGLW_STOP;
-	return (win);
-}
-
-void		mglwin_draw(mglwin *win)
-{
-	const int	m = win->mode;
-
-	if ((win) && (win->data->state & 1))
-	{
-		if (MGLWtcb[m].drawer)
-			MGLWtcb[m].drawer(win);
-		glfwSwapBuffers(win->data->window);
-	}
-}
-
 mglwin			*mglw_draw_itow(mglwin *win, mglimg *img, int x, int y)
 {
 	const int	m = win->mode;
@@ -236,42 +320,4 @@ mglwin			*mglw_draw_itow(mglwin *win, mglimg *img, int x, int y)
 			MGLWtcb[m].imagedraw(win, img, x, y);
 	}
 	return (win);
-}
-
-int			mglwin_is_running(mglwin *win)
-{
-	if ((win) && (win->data->state & 1) &&
-		!glfwWindowShouldClose(win->data->window))
-		return (1);
-	return (0);
-}
-
-mglwin		*mglw_closewin(mglwin *win)
-{
-	const int	m = win->mode;
-
-	if ((win) && (win->data->state & 1))
-	{
-		if (win->flags & MGLW_2DLAYER)
-			mglw_rmimg((mglimg *)(win->data->layer2D));
-		if (MGLWtcb[m].closer)
-			MGLWtcb[m].closer(win);
-		glfwDestroyWindow(win->data->window);
-		win->data->state = 0;
-	}
-	return (win);
-}
-
-void		mglw_rmwin(mglwin *win)
-{
-	if (!win)
-		return ;
-	MGLWdelwin(win);
-	win->data->user -= 1;
-	if (!(win->data->user))
-	{
-		mglw_closewin(win);
-		free(win->data);
-	}
-	free(win);
 }
