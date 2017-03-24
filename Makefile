@@ -6,7 +6,7 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2017/03/02 16:07:47 by qloubier         ###   ########.fr        #
+#    Updated: 2017/03/24 16:17:16 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,30 +14,32 @@ OPSYS		= $(shell uname -s)
 NAME		= libmglw.a
 LINKNAME	= mglw
 PROJECTNAME	= mglw
+PROJECTPATH	= $(CURDIR)
 SILENT		= @
-CFLAGS		= #-Wall -Werror -Wextra
+CFLAGS		= -Wall -Werror -Wextra
 
 ifndef CC
-  CC=clang
+	CC=clang
 endif
 
 ifndef config
-  config=release
+	config	= release
 endif
 ifeq ($(config),debug)
-  CFLAGS+=-g -fsanitize=address
-  LIBSUFIX=D
+	CFLAGS	+= -g -fsanitize=address
+	LIBSUFIX= D
 endif
 ifeq ($(config),release)
-  CFLAGS+=-Ofast
-  LIBSUFIX=
+	CFLAGS	+= -Ofast
+	LIBSUFIX=
 endif
 
 
-INCDIR=-Iinclude -Isrc/include -I$(LIBDIR)/glfw/include -I$(LIBDIR)/glload/include
-LIBDIR=lib
-BUILDDIR=build
-SRCDIR=src
+INCDIR		= -Iinclude -Isrc/include -I$(LIBDIR)/glfw42/include -I$(LIBDIR)/glload/include
+LIBDIR		= lib
+BUILDDIR	= build/$(config)
+TARGETDIR	= .
+SRCDIR		= src
 
 SRCS	=\
 	system.c\
@@ -57,83 +59,72 @@ SRCS	=\
 	image_loader.c\
 	error.c\
 	mgl/shaders.c\
-	mgl/strings/atlas.c\
-	mgl/strings/fromttf.c
 
 SHADERS	= pixelbox.vert pixelbox.frag\
 
-TESTSRC	= test/movesquare.c\
-		test/font.c
-
 OBJ=$(subst /,~,$(SRCS:%.c=%.o))
 
+# Intern vars
+INTERN_BD	= $(PROJECTPATH)/$(BUILDDIR)
 INTERN_SRCS	= $(SRCS:%=$(SRCDIR)/%)
-INTERN_OBJ	= $(OBJ:%=$(BUILDDIR)/mglw_%)
+INTERN_OBJ	= $(OBJ:%=$(INTERN_BD)/mglw_%)
 INTERN_DEP	= $(INTERN_OBJ:%.o=%.d)
 INTERN_SHA	= $(SHADERS:%=$(SRCDIR)/include/mgl/ressources/shaders/%.h)
-BOBJ_GUARD	= $(shell if [ -d $(BUILDDIR) ]; then printf "on"; else printf "off"; fi)
+BOBJ_GUARD	= $(shell if [ -d $(INTERN_BD) ]; then printf "on"; else printf "off"; fi)
 ALLOBJ		= $(INTERN_OBJ)
 OSXLIBS		= -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
-GLLOAD_OBJ	= $(BUILDDIR)/gl_load.o $(BUILDDIR)/gl_load_cpp.o
+GLLOAD_OBJ	= $(INTERN_BD)/gl_load.o $(INTERN_BD)/gl_load_cpp.o
 INTERN_SHADERCOMAND=
 ifeq ($(OPSYS),Linux)
-	INTERN_SHADERCOMAND+=| head -c -1 | tail -c +3
-  GLLOAD_OBJ += $(BUILDDIR)/glx_load.o $(BUILDDIR)/glx_load_cpp.o
+	INTERN_SHADERCOMAND += | head -c -1 | tail -c +3
+	GLLOAD_OBJ += $(INTERN_BD)/glx_load.o $(INTERN_BD)/glx_load_cpp.o
 endif
 
-.PHONY: all clean fclean re $(TESTSRC) include/mglw_keys.h $(INTERN_DEP)
+.PHONY: all clean fclean re $(TESTSRC) include/mglw_keys.h $(INTERN_DEP) shaders
 
-all: $(NAME)
+all: $(INTERN_SHA) $(TARGETDIR)/$(NAME)
 
-include/mglw_keys.h: glfw/include/GLFW/glfw3.h Makefile
-	printf "#ifndef MGLW_KEYS_H\n# define MGLW_KEYS_H\n\n" > include/mglw_keys.h
-	cat glfw/include/GLFW/glfw3.h | grep "#define GLFW_KEY" | sed "s/GLFW/MGLW/" >> include/mglw_keys.h
-	printf "\n#endif\n" >> include/mglw_keys.h
+shaders:
+	$(SILENT)$(MAKE) -s $(INTERN_SHA)
 
-$(INTERN_SHA): %.h: % Makefile
+$(INTERN_SHA): %.h: %
 	@printf "\e[33mShader $<\e[31m\e[80D"
 	$(SILENT)printf "(const char[]){" > $@
 	$(SILENT)xxd -i $< | grep -x "[0-9a-fx, ]*" $(INTERN_SHADERCOMAND) >> $@
 	$(SILENT)printf " , 0x00}" >> $@
 	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m\e(B\e[m\n"
 
-$(BUILDDIR):
-	$(SILENT)mkdir -p $(BUILDDIR)
+$(INTERN_BD):
+	$(SILENT)mkdir -p $(INTERN_BD)
 
-$(BUILDDIR)/Makefile:
-	$(SILENT)cd build && cmake ../$(LIBDIR)/glfw
-
-$(BUILDDIR)/src/libglfw3.a: $(BUILDDIR)/Makefile
-	$(SILENT)$(MAKE) -s -C $(BUILDDIR)
+$(INTERN_BD)/libglfw3.a:
+	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glfw42 BUILDDIR=$(INTERN_BD) TARGETDIR=$(INTERN_BD) config=$(config)
 
 $(GLLOAD_OBJ):
-	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glload $(CURDIR)/$@ BUILDDIR=$(CURDIR)/$(BUILDDIR) config=$(config)
+	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glload objects BUILDDIR=$(INTERN_BD) config=$(config)
 
-$(NAME): $(BUILDDIR) $(INTERN_SHA) $(BUILDDIR)/src/libglfw3.a $(INTERN_OBJ) $(GLLOAD_OBJ) Makefile
+$(TARGETDIR)/$(NAME): $(INTERN_SHA) $(INTERN_BD) $(INTERN_BD)/libglfw3.a $(GLLOAD_OBJ) $(INTERN_OBJ)
 ifeq ($(BOBJ_GUARD),off)
-	$(SILENT)$(MAKE) -s $(NAME) BOBJ_GUARD=on
+	$(SILENT)$(MAKE) -s $@ BOBJ_GUARD=on
 else
-	$(SILENT)cp $(BUILDDIR)/src/libglfw3.a ./$(NAME)
-	$(SILENT)ar -rcs $(NAME) $(ALLOBJ) $(GLLOAD_OBJ)
-	$(SILENT)sed "s/-lglfw3/-l$(LINKNAME)/" $(BUILDDIR)/src/glfw3.pc > ./$(LINKNAME).pc
-	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m compiled !\e(B\e[m\n"
+	$(SILENT)cp $(INTERN_BD)/libglfw3.a $@
+	$(SILENT)ar -rcs $@ $(ALLOBJ) $(GLLOAD_OBJ)
+	@printf "\e[80D%-79.79b \e[m[\e[32mok\e[m]\n" "\e[35m$(NAME)\e[m compiled !\e(B\e[m"
 endif
 
-$(INTERN_OBJ): Makefile
+$(INTERN_OBJ):
 ifeq ($(BOBJ_GUARD),on)
 	@printf "\e[33mCompile $@\e[31m\e[80D"
-	$(SILENT)$(CC) -MMD -MP $(CFLAGS) $(INCDIR) -o $@ -c $(subst ~,/,$(@:$(BUILDDIR)/mglw_%.o=$(SRCDIR)/%.c))
-	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m compiled !\e(B\e[m\n"
-else
-	@echo "$<"
+	$(SILENT)$(CC) -MMD -MP $(CFLAGS) $(INCDIR) -o $@ -c $(subst ~,/,$(@:$(INTERN_BD)/mglw_%.o=$(SRCDIR)/%.c))
+	@printf "\e[80D%-79.79b \e[m[\e[32mok\e[m]\n" "\e[35m$(notdir $@)\e[m compiled !\e(B\e[m"
 endif
 
 -include $(INTERN_DEP)
 
 libclean:
 	@printf "\e[31mCleaning lib files ...\e(B\e[m\n"
-	$(SILENT)rm -rf $(BUILDDIR)/src/libglfw3.a
-	$(SILENT)rm -rf $(BUILDDIR)/libglload.a $(BUILDDIR)/gl_load*.o $(BUILDDIR)/glx_load*.o
+	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glfw42 fclean BUILDDIR=$(INTERN_BD) TARGETDIR=$(INTERN_BD) config=$(config)
+	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glload clean BUILDDIR=$(INTERN_BD) config=$(config)
 
 clean:
 	@printf "\e[31mCleaning compile files ...\e(B\e[m\n"
@@ -144,14 +135,3 @@ fclean: clean
 	$(SILENT)rm -f $(NAME)
 
 re: fclean all
-
-$(TESTSRC):
-ifeq ($(OPSYS),Linux)
-	$(CC) -o test_mglw $@ $(CFLAGS) $(INCDIR) -L./ -lGL $(shell pkg-config --static --libs mglw.pc)
-else
-	$(CC) -o test_mglw $@ $(CFLAGS) $(INCDIR) -L./ -lmglw $(OSXLIBS)
-endif
-	./test_mglw
-
-test: $(NAME)
-	$(MAKE) $(TESTSRC)
