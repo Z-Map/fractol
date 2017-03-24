@@ -39,5 +39,3 @@ build/*
 build/**/*
 mglw.pc
 test_mglw
-
-Makefile
