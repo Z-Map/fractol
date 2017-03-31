@@ -6,42 +6,46 @@
 #    By: qloubier <qloubier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/03 18:39:00 by qloubier          #+#    #+#              #
-#    Updated: 2017/03/24 16:17:16 by qloubier         ###   ########.fr        #
+#    Updated: 2017/03/28 17:12:35 by qloubier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-OPSYS		= $(shell uname -s)
-NAME		= libmglw.a
-LINKNAME	= mglw
-PROJECTNAME	= mglw
-PROJECTPATH	= $(CURDIR)
-SILENT		= @
-CFLAGS		= -Wall -Werror -Wextra
+NAME			= libmglw.a
+LINKNAME		= mglw
+PROJECTNAME		= mglw
+PROJECTPATH		= $(CURDIR)
+SILENT			= @
+CFLAGS			= -Wall -Wpadding -Wextra -Werror
+ARFLAGS			= -rcs
+CDEFINES		=
+OSXLIBS			= -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
+LINUXLIBS		= -lrt -lm -ldl -lXrandr -lXinerama -lXext -lXcursor -lXrender -lXfixes -lX11 -lpthread -lxcb -lXau -lXdmcp -lGL
 
 ifndef CC
-	CC=clang
+  CC			= clang
 endif
 
-ifndef config
-	config	= release
-endif
-ifeq ($(config),debug)
-	CFLAGS	+= -g -fsanitize=address
-	LIBSUFIX= D
-endif
-ifeq ($(config),release)
-	CFLAGS	+= -Ofast
-	LIBSUFIX=
+ifndef CXX
+  CXX			= clang
 endif
 
+ifndef AR
+  AR			= ar
+endif
 
-INCDIR		= -Iinclude -Isrc/include -I$(LIBDIR)/glfw42/include -I$(LIBDIR)/glload/include
-LIBDIR		= lib
-BUILDDIR	= build/$(config)
-TARGETDIR	= .
-SRCDIR		= src
+TARGETDIR		= .
+LIBDIR			= lib
+SRCDIR			= src
+SRCDIR_SHADERS	= src/shaders
+SRCDIR_GLFW		= $(LIBDIR)/glfw/src
+SRCDIR_GLLOAD	= $(LIBDIR)/glload/source
 
-SRCS	=\
+INCDIR			= include $(SRCDIR)/include
+INCDIR_SHADERS	= $(SRCDIR)/include/mgl/ressources/shaders
+INCDIR_GLLOAD	= $(LIBDIR)/glload/include
+INCDIR_GLFW		= $(LIBDIR)/include $(LIBDIR)/glfw/src
+
+SRCS			=\
 	system.c\
 	system/settings.c\
 	system/wlst.c\
@@ -60,27 +64,90 @@ SRCS	=\
 	error.c\
 	mgl/shaders.c\
 
-SHADERS	= pixelbox.vert pixelbox.frag\
+SHADERS			= pixelbox.vert pixelbox.frag\
 
-OBJ=$(subst /,~,$(SRCS:%.c=%.o))
+SRCS_GLLOAD		= gl_load.c gl_load_cpp.cpp
 
-# Intern vars
-INTERN_BD	= $(PROJECTPATH)/$(BUILDDIR)
-INTERN_SRCS	= $(SRCS:%=$(SRCDIR)/%)
-INTERN_OBJ	= $(OBJ:%=$(INTERN_BD)/mglw_%)
-INTERN_DEP	= $(INTERN_OBJ:%.o=%.d)
-INTERN_SHA	= $(SHADERS:%=$(SRCDIR)/include/mgl/ressources/shaders/%.h)
-BOBJ_GUARD	= $(shell if [ -d $(INTERN_BD) ]; then printf "on"; else printf "off"; fi)
-ALLOBJ		= $(INTERN_OBJ)
-OSXLIBS		= -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
-GLLOAD_OBJ	= $(INTERN_BD)/gl_load.o $(INTERN_BD)/gl_load_cpp.o
-INTERN_SHADERCOMAND=
+SRCS_GLFW		=\
+		context.c\
+		init.c\
+		input.c\
+		monitor.c\
+		vulkan.c\
+		window.c
+
+OPSYS=$(shell uname -s)
+
 ifeq ($(OPSYS),Linux)
-	INTERN_SHADERCOMAND += | head -c -1 | tail -c +3
-	GLLOAD_OBJ += $(INTERN_BD)/glx_load.o $(INTERN_BD)/glx_load_cpp.o
+  CDEFINES		+= -D_GLFW_X11
+  SRCS_GLFW		+=\
+	x11_init.c\
+	x11_monitor.c\
+	x11_window.c\
+	xkb_unicode.c\
+	linux_joystick.c\
+	posix_time.c\
+	posix_tls.c\
+	glx_context.c\
+	egl_context.c
+  SRCS_GLLOAD	= glx_load.c glx_load_cpp.cpp
+else
+  CDEFINES		+= -D_GLFW_COCOA -D_GLFW_USE_CHDIR -D_GLFW_USE_RETINA\
+	-D_GLFW_USE_MENUBAR
+  SRCS_GLFW			+=\
+	posix_tls.c\
+	cocoa_time.c\
+	cocoa_init.m\
+	cocoa_joystick.m\
+	cocoa_monitor.m\
+	cocoa_window.m\
+	nsgl_context.m
+  CFLAGS		+= -Wno-deprecated-declarations
 endif
 
-.PHONY: all clean fclean re $(TESTSRC) include/mglw_keys.h $(INTERN_DEP) shaders
+ifndef config
+  config		= release
+endif
+ifeq ($(config),debug)
+  CFLAGS		+= -O1 -g -fsanitize=address
+endif
+ifeq ($(config),release)
+  CFLAGS		+= -Ofast
+endif
+
+BUILDDIR		= build/$(config)
+
+# Intern vars
+INT_BD		= $(PROJECTPATH)/$(BUILDDIR)
+
+INT_INCFLAGS = $(INCDIR:%=-I%)\
+	$(INCDIR_SHADERS:%=-I%)\
+	$(INCDIR_GLLOAD:%=-I%)\
+	$(INCDIR_GLFW:%=-I%)
+
+INT_SRCS 	= $(SRCS:%=$(SRCDIR)/%)\
+	$(SRCS_GLLOAD:%=$(SRCDIR_GLLOAD)/%)\
+	$(SRCS_GLFW:%=$(SRCDIR_GLFW)/%)
+
+INT_CSRCS	= $(filter %.c,$(INT_SRCS))
+INT_CXXSRCS	= $(filter %.cpp,$(INT_SRCS))
+INT_MSRCS	= $(filter %.m,$(INT_SRCS))
+
+INT_COBJ	= $(subst /,~,$(INT_CSRCS:%.c=%.o))
+INT_CXXOBJ	= $(subst /,~,$(INT_CXXSRCS:%.cpp=%.o))
+INT_MOBJ	= $(subst /,~,$(INT_MSRCS:%.m=%.o))
+
+INT_ALLOBJ	= $(INT_COBJ:%=$(INT_BD)/mglw_%)
+	$(INT_CXXOBJ:%=$(INT_BD)/mglw_%)
+	$(INT_MOBJ:%=$(INT_BD)/mglw_%)
+
+INT_DEP		= $(INTERN_OBJ:%.o=%.d)
+INT_INCSHA	= $(SHADERS:%=$(INCDIR_SHADERS)/%.h)
+INT_SHADERS	= $(SHADERS:%=$(INCDIR_SHADERS)/%.h)
+
+BOBJ_GUARD	= $(shell if [ -d $(INT_BD) ]; then printf "on"; else printf "off"; fi)
+
+.PHONY: all clean fclean re shaders $(INTERN_DEP)
 
 all: $(INTERN_SHA) $(TARGETDIR)/$(NAME)
 
@@ -90,41 +157,46 @@ shaders:
 $(INTERN_SHA): %.h: %
 	@printf "\e[33mShader $<\e[31m\e[80D"
 	$(SILENT)printf "(const char[]){" > $@
-	$(SILENT)xxd -i $< | grep -x "[0-9a-fx, ]*" $(INTERN_SHADERCOMAND) >> $@
+ifeq ($(OPSYS),Linux)
+	$(SILENT)xxd -i $< | grep -x "[0-9a-fx, ]*" | head -c -1 | tail -c +3 >> $@
+else
+	$(SILENT)xxd -i $< | grep -x "[0-9a-fx, ]*" >> $@
+endif
 	$(SILENT)printf " , 0x00}" >> $@
 	@printf "\e[m[\e[32mok\e[m] \e[35m$@\e[m\e(B\e[m\n"
 
-$(INTERN_BD):
-	$(SILENT)mkdir -p $(INTERN_BD)
+$(INT_BD):
+	$(SILENT)mkdir -p $(INT_BD)
 
-$(INTERN_BD)/libglfw3.a:
-	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glfw42 BUILDDIR=$(INTERN_BD) TARGETDIR=$(INTERN_BD) config=$(config)
-
-$(GLLOAD_OBJ):
-	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glload objects BUILDDIR=$(INTERN_BD) config=$(config)
-
-$(TARGETDIR)/$(NAME): $(INTERN_SHA) $(INTERN_BD) $(INTERN_BD)/libglfw3.a $(GLLOAD_OBJ) $(INTERN_OBJ)
 ifeq ($(BOBJ_GUARD),off)
+$(TARGETDIR)/$(NAME): $(INTERN_SHA) $(INT_BD)
 	$(SILENT)$(MAKE) -s $@ BOBJ_GUARD=on
 else
-	$(SILENT)cp $(INTERN_BD)/libglfw3.a $@
-	$(SILENT)ar -rcs $@ $(ALLOBJ) $(GLLOAD_OBJ)
+$(TARGETDIR)/$(NAME): $(INT_ALLOBJ)
+	$(SILENT)$(AR) $(ARFLAGS) $@ $(INT_ALLOBJ)
 	@printf "\e[80D%-79.79b \e[m[\e[32mok\e[m]\n" "\e[35m$(NAME)\e[m compiled !\e(B\e[m"
 endif
 
-$(INTERN_OBJ):
+$(INT_ALLOBJ):
 ifeq ($(BOBJ_GUARD),on)
 	@printf "\e[33mCompile $@\e[31m\e[80D"
-	$(SILENT)$(CC) -MMD -MP $(CFLAGS) $(INCDIR) -o $@ -c $(subst ~,/,$(@:$(INTERN_BD)/mglw_%.o=$(SRCDIR)/%.c))
+	$(SILENT)$(CC) -MMD -MP $(CFLAGS) $(INCDIR) -o $@ -c $(subst ~,/,$(@:$(INT_BD)/mglw_%.o=$(SRCDIR)/%.c))
 	@printf "\e[80D%-79.79b \e[m[\e[32mok\e[m]\n" "\e[35m$(notdir $@)\e[m compiled !\e(B\e[m"
 endif
 
--include $(INTERN_DEP)
+$(INT_ALLOBJ):
+ifeq ($(BOBJ_GUARD),on)
+	@printf "\e[33mCompile $@\e[31m\e[80D"
+	$(SILENT)$(CXX) -MMD -MP $(CXXFLAGS) $(INCDIR) -o $@ -c $(subst ~,/,$(@:$(INT_BD)/mglw_%.o=$(SRCDIR)/%.c))
+	@printf "\e[80D%-79.79b \e[m[\e[32mok\e[m]\n" "\e[35m$(notdir $@)\e[m compiled !\e(B\e[m"
+endif
+
+-include $(INT_DEP)
 
 libclean:
 	@printf "\e[31mCleaning lib files ...\e(B\e[m\n"
-	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glfw42 fclean BUILDDIR=$(INTERN_BD) TARGETDIR=$(INTERN_BD) config=$(config)
-	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glload clean BUILDDIR=$(INTERN_BD) config=$(config)
+	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glfw42 fclean BUILDDIR=$(INT_BD) TARGETDIR=$(INT_BD) config=$(config)
+	$(SILENT)$(MAKE) -s -C $(LIBDIR)/glload clean BUILDDIR=$(INT_BD) config=$(config)
 
 clean:
 	@printf "\e[31mCleaning compile files ...\e(B\e[m\n"

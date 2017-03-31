@@ -6,7 +6,7 @@
 /*   By: map <map@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/18 01:55:52 by map               #+#    #+#             */
-/*   Updated: 2016/12/21 15:31:03 by qloubier         ###   ########.fr       */
+/*   Updated: 2017/03/24 22:46:23 by qloubier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "hlib/stb_image.h"
 #pragma GCC diagnostic pop
+
+// comment
 
 mglimg		*mglw_loadimage(const char *filename, mglw_if flags, int n)
 {
